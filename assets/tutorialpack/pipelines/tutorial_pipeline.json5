@@ -1,0 +1,41 @@
+{
+  nameKey: "pipeline.tutorial_pipeline.name",
+  descriptionKey: "pipeline.tutorial_pipeline.desc",
+
+  materialProgram: {
+    vertexSource: "tutorialpack:shaders/gbuffer/main.vert",
+    fragmentSource: "tutorialpack:shaders/gbuffer/main.frag",
+    samplers: [
+      "u_glint"
+    ],
+    samplerImages: [
+      "minecraft:textures/misc/enchanted_item_glint.png"
+    ]
+  },
+
+  drawTargets: {
+    solidTerrain: "main_gbuffer",
+    translucentTerrain: "main_gbuffer",
+    translucentEntity: "main_gbuffer",
+    weather: "main_gbuffer",
+    clouds: "main_gbuffer",
+    translucentParticles: "main_gbuffer"
+  },
+
+  defaultFramebuffer: "main_gbuffer",
+
+  beforeWorldRender: {
+    passes: [
+      {
+        // clears the main gbuffer at the start of each frames
+        name: "clear_main_gbuffer",
+        framebuffer: "main_gbuffer",
+        program: "frex_clear"
+      }
+    ]
+  },
+
+  include: [
+    "tutorialpack:pipeline_files/main.json"
+  ]
+}
