@@ -5,10 +5,56 @@
 
 uniform sampler2D u_glint;
 
+in vec4 shadowViewPos;
+
 // In the case of multiple color attachments, you use different layout qualifiers.
 layout(location = 0) out vec4 fragColor;
 
-vec4 calculate_color() {
+// Helper function
+vec3 shadowDist(int cascade) {
+    vec4 c = frx_shadowCenter(cascade);
+    return abs((c.xyz - shadowViewPos.xyz) / c.w);
+}
+
+// Function for obtaining the cascade level
+int selectShadowCascade() {
+    vec3 d3 = shadowDist(3);
+    if (d3.x < 1.0 && d3.y < 1.0 && d3.z < 1.0) {
+        return 3;
+    }
+
+    vec3 d2 = shadowDist(2);
+    if (d2.x < 1.0 && d2.y < 1.0 && d2.z < 1.0) {
+        return 2;
+    }
+
+    vec3 d1 = shadowDist(1);
+    if (d1.x < 1.0 && d1.y < 1.0 && d1.z < 1.0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+vec4 calculateColor() {
+    // Obtain the cascade level
+    int cascade = selectShadowCascade();
+
+    // Obtain shadow-space position
+    vec4 shadowPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
+
+    // Transform into texture coordinates
+    vec3 shadowTexCoord = shadowPos.xyz * 0.5 + 0.5;
+
+    // Sample the shadow map
+    float directSkyLight = texture(frxs_shadowMap, vec4(shadowTexCoord.xy, cascade, shadowTexCoord.z));
+
+    // Pad the value to prevent absolute darkness
+    directSkyLight = 0.3 + 0.7 * directSkyLight;
+
+    // Blend with the sky light using a simple multiply
+    fragData.light.y *= directSkyLight;
+
     // frx_fragColor refers to the Minecraft texture color,
     // already multiplied with the vertex color so we can use it just like this.
     vec4 color = frx_fragColor;
@@ -59,7 +105,7 @@ vec4 apply_special_effects(vec4 color) {
 }
 
 void frx_pipelineFragment() {
-    vec4 color = calculate_color();
+    vec4 color = calculateColor();
 
     color = apply_special_effects(color);
 
