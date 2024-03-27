@@ -39,5 +39,8 @@
       name: "shadow",
       depthAttachment: { image: "shadow_map", clearDepth: 1.0 }
     }
-  ]
+  ],
+  sky: {
+    defaultZenithAngle: 15
+  }
 }

@@ -53,7 +53,7 @@ vec4 calculateColor() {
     directSkyLight = 0.3 + 0.7 * directSkyLight;
 
     // Blend with the sky light using a simple multiply
-    fragData.light.y *= directSkyLight;
+    frx_fragLight.y *= directSkyLight;
 
     // frx_fragColor refers to the Minecraft texture color,
     // already multiplied with the vertex color so we can use it just like this.
@@ -63,8 +63,9 @@ vec4 calculateColor() {
     if(frx_fragEnableAo) {
         lightmap *= frx_fragLight.z;
     }
+
     if(frx_fragEnableDiffuse) {
-        float diffuseFactor = dot(frx_vertexNormal, vec3(0.0, 1.0, 0.0));
+        float diffuseFactor = dot(frx_vertexNormal, frx_isGui ? vec3(0.0, 1.0, 0.0) : frx_skyLightVector);
         diffuseFactor = diffuseFactor * 0.5 + 0.5;
         diffuseFactor = 0.3 + 0.7 * diffuseFactor;
 
