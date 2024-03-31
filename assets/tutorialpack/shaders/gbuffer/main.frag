@@ -2,6 +2,7 @@
 #include frex:shaders/api/fragment.glsl
 #include frex:shaders/api/world.glsl
 #include frex:shaders/api/sampler.glsl
+#include frex:shaders/api/fog.glsl
 
 uniform sampler2D u_glint;
 
@@ -88,22 +89,16 @@ vec4 calculateColor() {
     return color;
 }
 
-vec4 applyGlint(vec4 color) {
-    // Sample the glint texture and animate it
-    vec3 glint = texture(u_glint, fract(frx_normalizeMappedUV(frx_texcoord) * 0.5 + frx_renderSeconds * 0.1)).rgb;
-
-    // Apply the glint to the color
-    glint = pow(glint, vec3(4.0));
-    color.rgb += glint;
-
-    return color;
-}
-
 vec4 applySpecialEffects(vec4 color) {
     if(frx_matGlint == 1) {
-        color = applyGlint(color);
+        // Sample the glint texture and animate it
+        vec3 glint = texture(u_glint, fract(frx_normalizeMappedUV(frx_texcoord) * 0.5 + frx_renderSeconds * 0.1)).rgb;
+
+        // Apply the glint to the color
+        glint = pow(glint, vec3(4.0));
+        color.rgb += glint;
     }
-    // Apply hurt effect if the material is specified to have hurt
+    // Apply hurt effect (decrease green and blue) if the material is specified to have hurt
     if(frx_matHurt == 1) {
         color.gb *= 0.1;
     }
@@ -115,8 +110,23 @@ vec4 applySpecialEffects(vec4 color) {
     return color;
 }
 
+vec4 applyFog(vec4 color) {
+    vec3 fogColor = frx_fogColor.rgb;
+
+    float blockDistance = length(frx_vertex.xyz);
+    float fogFactor = smoothstep(frx_fogStart, frx_fogEnd, blockDistance);
+
+    return mix(color, vec4(fogColor, color.a), fogFactor);
+}
+
 void frx_pipelineFragment() {
-    fragColor = applySpecialEffects(calculateColor());
+    vec4 color = calculateColor();
+    color = applySpecialEffects(color);
+    if(!frx_isGui) {
+        color = applyFog(color);
+    }
+
+    fragColor = color;
 
     // Write position data to the depth attachment
     gl_FragDepth = gl_FragCoord.z;
