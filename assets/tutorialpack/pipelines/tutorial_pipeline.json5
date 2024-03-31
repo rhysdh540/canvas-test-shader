@@ -2,6 +2,8 @@
   nameKey: "pipeline.tutorial_pipeline.name",
   descriptionKey: "pipeline.tutorial_pipeline.desc",
 
+  runVanillaClear: true,
+
   materialProgram: {
     vertexSource: "tutorialpack:shaders/gbuffer/main.vert",
     fragmentSource: "tutorialpack:shaders/gbuffer/main.frag",

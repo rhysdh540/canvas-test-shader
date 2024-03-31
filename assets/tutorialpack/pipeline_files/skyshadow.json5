@@ -12,7 +12,7 @@
     // second parameter to glPolygonOffset - constant offset bias
     offsetBiasUnits: 4.0,
     // In-world radii of next-to-lowest to highest detail cascades.
-    cascadeRadius: [32, 16, 8]
+    cascadeRadius: [64, 32, 8]
   },
   images: [
     // depth attachment for shadow map
@@ -41,6 +41,6 @@
     }
   ],
   sky: {
-    defaultZenithAngle: 15
+    defaultZenithAngle: 0
   }
 }

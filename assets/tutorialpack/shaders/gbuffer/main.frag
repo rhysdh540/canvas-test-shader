@@ -10,6 +10,9 @@ in vec4 shadowViewPos;
 // In the case of multiple color attachments, you use different layout qualifiers.
 layout(location = 0) out vec4 fragColor;
 
+// The shadow light vector - left and up
+const vec3 guiSkyLightVector = vec3(0.5, 1.0, 1.0);
+
 // Helper function
 vec3 shadowDist(int cascade) {
     vec4 c = frx_shadowCenter(cascade);
@@ -52,34 +55,40 @@ vec4 calculateColor() {
     // Pad the value to prevent absolute darkness
     directSkyLight = 0.3 + 0.7 * directSkyLight;
 
+    // Apply diffuse lighting to the block
+    // the shadow map isn't perfect, this should fix any discrepancies
+    if(frx_fragEnableDiffuse) {
+        // point towards sky if in world, if in gui then point up
+        float ndotl = dot(frx_vertexNormal.xyz, frx_skyLightVector);
+        directSkyLight *= step(0.0, ndotl);
+    }
+
     // Blend with the sky light using a simple multiply
     frx_fragLight.y *= directSkyLight;
 
-    // frx_fragColor refers to the Minecraft texture color,
-    // already multiplied with the vertex color so we can use it just like this.
-    vec4 color = frx_fragColor;
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
 
     if(frx_fragEnableAo) {
         lightmap *= frx_fragLight.z;
     }
 
-    if(frx_fragEnableDiffuse) {
-        // point towards sky if in world, if in gui then point up
-        float diffuseFactor = dot(frx_vertexNormal, frx_isGui ? vec3(0.0, 1.0, 0.0) : frx_skyLightVector);
-        diffuseFactor = diffuseFactor * 0.5 + 0.5;
-        diffuseFactor = 0.3 + 0.7 * diffuseFactor;
-
-        lightmap *= diffuseFactor;
+    // Apply lighting to blocks in guis
+    if(frx_fragEnableDiffuse && frx_isGui) {
+        float ndotl = dot(frx_vertexNormal.xyz, guiSkyLightVector);
+        ndotl = ndotl * 0.5 + 0.5;
+        lightmap *= ndotl;
     }
 
     lightmap = mix(lightmap, vec3(1.0), frx_fragEmissive);
 
+    // frx_fragColor refers to the Minecraft texture color,
+    // already multiplied with the vertex color so we can use it just like this.
+    vec4 color = frx_fragColor;
     color.rgb *= lightmap;
     return color;
 }
 
-vec4 apply_glint(vec4 color) {
+vec4 applyGlint(vec4 color) {
     // Sample the glint texture and animate it
     vec3 glint = texture(u_glint, fract(frx_normalizeMappedUV(frx_texcoord) * 0.5 + frx_renderSeconds * 0.1)).rgb;
 
@@ -90,9 +99,9 @@ vec4 apply_glint(vec4 color) {
     return color;
 }
 
-vec4 apply_special_effects(vec4 color) {
+vec4 applySpecialEffects(vec4 color) {
     if(frx_matGlint == 1) {
-        color = apply_glint(color);
+        color = applyGlint(color);
     }
     // Apply hurt effect if the material is specified to have hurt
     if(frx_matHurt == 1) {
@@ -107,12 +116,7 @@ vec4 apply_special_effects(vec4 color) {
 }
 
 void frx_pipelineFragment() {
-    vec4 color = calculateColor();
-
-    color = apply_special_effects(color);
-
-    // Write color data to the color attachment
-    fragColor = color;
+    fragColor = applySpecialEffects(calculateColor());
 
     // Write position data to the depth attachment
     gl_FragDepth = gl_FragCoord.z;
