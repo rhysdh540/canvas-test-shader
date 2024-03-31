@@ -65,6 +65,7 @@ vec4 calculateColor() {
     }
 
     if(frx_fragEnableDiffuse) {
+        // point towards sky if in world, if in gui then point up
         float diffuseFactor = dot(frx_vertexNormal, frx_isGui ? vec3(0.0, 1.0, 0.0) : frx_skyLightVector);
         diffuseFactor = diffuseFactor * 0.5 + 0.5;
         diffuseFactor = 0.3 + 0.7 * diffuseFactor;

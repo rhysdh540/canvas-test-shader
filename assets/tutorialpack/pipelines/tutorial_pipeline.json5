@@ -15,28 +15,64 @@
 
   drawTargets: {
     solidTerrain: "main_gbuffer",
-    translucentTerrain: "main_gbuffer",
-    translucentEntity: "main_gbuffer",
-    weather: "main_gbuffer",
-    clouds: "main_gbuffer",
-    translucentParticles: "main_gbuffer"
+    translucentTerrain: "translucent_gbuffer",
+    translucentEntity: "entity_gbuffer",
+    weather: "weather_gbuffer",
+    clouds: "clouds_gbuffer",
+    translucentParticles: "particles_gbuffer"
   },
 
-  defaultFramebuffer: "main_gbuffer",
+  fabulousTargets: {
+    translucent: "translucent_unmanaged",
+    entity: "entity_unmanaged",
+    weather: "weather_unmanaged",
+    clouds: "clouds_unmanaged",
+    particles: "particles_unmanaged"
+  },
+
+  defaultFramebuffer: "main_unmanaged",
 
   beforeWorldRender: {
     passes: [
+      // clears the gbuffers at the start of each frames
       {
-        // clears the main gbuffer at the start of each frames
         name: "clear_main_gbuffer",
         framebuffer: "main_gbuffer",
+        program: "frex_clear",
+      },
+      {
+        name: "clear_translucent_gbuffer",
+        framebuffer: "translucent_gbuffer",
         program: "frex_clear"
-      }
+      },
+      {
+        name: "clear_entity_gbuffer",
+        framebuffer: "entity_gbuffer",
+        program: "frex_clear"
+      },
+      {
+        name: "clear_weather_gbuffer",
+        framebuffer: "weather_gbuffer",
+        program: "frex_clear"
+      },
+      {
+        name: "clear_clouds_gbuffer",
+        framebuffer: "clouds_gbuffer",
+        program: "frex_clear"
+      },
+      {
+        name: "clear_particles_gbuffer",
+        framebuffer: "particles_gbuffer",
+        program: "frex_clear"
+      },
     ]
   },
 
   include: [
-    "tutorialpack:pipeline_files/main.json",
-    "tutorialpack:pipeline_files/skyshadow.json",
+    "tutorialpack:pipeline_files/main.json5",
+    "tutorialpack:pipeline_files/skyshadow.json5",
+    "tutorialpack:pipeline_files/fabulous_layers.json5",
+    "tutorialpack:pipeline_files/composite.json5",
+    "tutorialpack:pipeline_files/passes.json5",
   ]
 }
