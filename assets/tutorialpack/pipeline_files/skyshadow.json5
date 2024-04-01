@@ -7,18 +7,64 @@
     supportForwardRender: true,
     vertexSource: "tutorialpack:shaders/gbuffer/shadow.vert",
     fragmentSource: "tutorialpack:shaders/gbuffer/shadow.frag",
-    // first parameter to glPolygonOffset - variable slope factor
     offsetSlopeFactor: 1.1,
-    // second parameter to glPolygonOffset - constant offset bias
     offsetBiasUnits: 4.0,
-    // In-world radii of next-to-lowest to highest detail cascades.
-    cascadeRadius: [64, 32, 8]
+    cascadeRadius: [
+      {
+        optionMap: {
+          shadow_resolution: [
+            { from: "512", to: 64 },
+            { from: "1024", to: 64 },
+            { from: "2048", to: 64 },
+            { from: "4096", to: 48 },
+            { from: "8192", to: 48 },
+            { from: "16384", to: 3 }
+          ]
+        }
+      },
+      {
+        optionMap: {
+          shadow_resolution: [
+            { from: "512", to: 32 },
+            { from: "1024", to: 32 },
+            { from: "2048", to: 32 },
+            { from: "4096", to: 16 },
+            { from: "8192", to: 16 },
+            { from: "16384", to: 8 }
+          ]
+        }
+      },
+      {
+        optionMap: {
+          shadow_resolution: [
+            { from: "512", to: 8 },
+            { from: "1024", to: 8 },
+            { from: "2048", to: 8 },
+            { from: "4096", to: 4 },
+            { from: "8192", to: 4 },
+            { from: "16384", to: 2 }
+          ]
+        }
+      }
+    ]
   },
   images: [
     // depth attachment for shadow map
     {
       name: "shadow_map",
-      size: 1024,
+      size: {
+        default: 1024,
+        optionMap: {
+          shadow_resolution: [
+            { from: "512", to: 512 },
+            { from: "1024", to: 1024 },
+            { from: "2048", to: 2048 },
+            { from: "4096", to: 4096 },
+            { from: "8192", to: 8192 },
+            { from: "16384", to: 16384 }
+          ]
+        }
+      },
       internalFormat: "DEPTH_COMPONENT32",
       pixelFormat: "DEPTH_COMPONENT",
       pixelDataType: "FLOAT",

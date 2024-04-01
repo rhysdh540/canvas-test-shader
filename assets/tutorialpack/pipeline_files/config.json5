@@ -1,0 +1,23 @@
+{
+  options: [
+    // shadow
+    {
+      includeToken: "tutorialpack:shadow",
+      categoryKey: "config.tutorial_pipeline.category.shadow",
+      options: {
+        shadows_enabled: { // todo make this work
+          default: false,
+          nameKey: "config.tutorial_pipeline.shadow.enabled",
+          descriptionKey: "config.tutorial_pipeline.shadow.enabled.desc",
+        },
+        shadow_resolution: {
+          default: "1024",
+          enum: true,
+          choices: ["512", "1024", "2048", "4096", "8192", "16384"],
+          nameKey: "config.tutorial_pipeline.shadow.resolution",
+          descriptionKey: "config.tutorial_pipeline.shadow.resolution.desc"
+        }
+      }
+    }
+  ]
+}

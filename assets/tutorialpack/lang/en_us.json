@@ -1,4 +1,10 @@
 {
   "pipeline.tutorial_pipeline.name": "Tutorial Pipeline",
-  "pipeline.tutorial_pipeline.desc": "This is a tutorial pipeline"
+  "pipeline.tutorial_pipeline.desc": "This is a tutorial pipeline",
+
+  "config.tutorial_pipeline.category.shadow": "Shadow Config",
+  "config.tutorial_pipeline.shadow.enabled": "Sky Shadows",
+  "config.tutorial_pipeline.shadow.enabled.desc": "Enable hard shadows from the sky",
+  "config.tutorial_pipeline.shadow.resolution": "Shadow Resolution",
+  "config.tutorial_pipeline.shadow.resolution.desc": "The resolution of the shadow map"
 }

@@ -11,8 +11,8 @@ in vec4 shadowViewPos;
 // In the case of multiple color attachments, you use different layout qualifiers.
 layout(location = 0) out vec4 fragColor;
 
-// The shadow light vector - left and up
-const vec3 guiSkyLightVector = vec3(0.5, 1.0, 1.0);
+// The shadow light vector - right and up
+const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
 
 // Helper function
 vec3 shadowDist(int cascade) {
@@ -41,6 +41,7 @@ int selectShadowCascade() {
 }
 
 vec4 calculateColor() {
+    #ifdef SHADOW_MAP_PRESENT
     // Obtain the cascade level
     int cascade = selectShadowCascade();
 
@@ -59,27 +60,40 @@ vec4 calculateColor() {
     // Apply diffuse lighting to the block
     // the shadow map isn't perfect, this should fix any discrepancies
     if(frx_fragEnableDiffuse) {
-        // point towards sky if in world, if in gui then point up
-        float ndotl = dot(frx_vertexNormal.xyz, frx_skyLightVector);
+        float ndotl = dot(frx_vertexNormal, frx_skyLightVector);
         directSkyLight *= step(0.0, ndotl);
     }
 
     // Blend with the sky light using a simple multiply
     frx_fragLight.y *= directSkyLight;
+    #endif
 
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
+
+    #ifndef SHADOW_MAP_PRESENT
+    // Apply diffuse lighting to the block
+    if(frx_fragEnableDiffuse) {
+        float ndotl = dot(frx_vertexNormal, frx_skyLightVector);
+        ndotl = ndotl * 0.5 + 0.5; // clamp
+        ndotl = 0.3 + 0.7 * ndotl; // pad
+        ndotl = min(1.0, ndotl + 0.2); // lighten
+
+        lightmap *= ndotl;
+    }
+    #endif
 
     if(frx_fragEnableAo) {
         lightmap *= frx_fragLight.z;
     }
 
     // Apply lighting to blocks in guis
-    if(frx_fragEnableDiffuse && frx_isGui) {
-        float ndotl = dot(frx_vertexNormal.xyz, guiSkyLightVector);
-        ndotl = ndotl * 0.5 + 0.5;
+    if(frx_fragEnableDiffuse && frx_isGui && !frx_isHand) {
+        float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
+        ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
         lightmap *= ndotl;
     }
 
+    // emmissive textures are always fully lit
     lightmap = mix(lightmap, vec3(1.0), frx_fragEmissive);
 
     // frx_fragColor refers to the Minecraft texture color,
