@@ -14,6 +14,7 @@ layout(location = 0) out vec4 fragColor;
 
 // The shadow light vector - right and up
 const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
+const vec3 hurtColor = vec3(1.0, 0.1, 0.1);
 
 // Helper function
 vec3 shadowDist(int cascade) {
@@ -77,16 +78,15 @@ vec4 calculateColor() {
         lightmap *= frx_fragLight.z;
     }
 
-    // Apply diffuse lighting to the block
-    if(frx_fragEnableDiffuse && !isGui) {
-        lightmap *= p_diffuse(frx_vertexNormal);
-    }
-
-    // Apply lighting to blocks in guis
-    if(frx_fragEnableDiffuse && isGui) {
-        float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
-        ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
-        lightmap *= ndotl;
+    // Apply diffuse lighting (again)
+    if(frx_fragEnableDiffuse) {
+        if(isGui) {
+            float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
+            ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
+            lightmap *= ndotl;
+        } else {
+            lightmap *= p_diffuse(frx_vertexNormal);
+        }
     }
 
     // emmissive textures are always fully lit
@@ -110,7 +110,7 @@ vec4 applySpecialEffects(vec4 color) {
     }
     // Apply hurt effect (decrease green and blue) if the material is specified to have hurt
     if(frx_matHurt == 1) {
-        color.gb *= 0.1;
+        color.rgb = mix(color.rgb, hurtColor, 0.5);
     }
     // Apply flash effect if the material is specified to be flashing
     if(frx_matFlash == 1) {
