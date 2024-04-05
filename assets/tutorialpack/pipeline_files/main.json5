@@ -42,7 +42,5 @@
       depthAttachment: { image: "main_depth" },
       colorAttachments: [{ image: "main_color" }]
     }
-  ],
-
-  include: ["tutorialpack:pipeline_files/skyshadow.json5"]
+  ]
 }

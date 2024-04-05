@@ -76,5 +76,16 @@
     "tutorialpack:pipeline_files/fabulous_layers.json5",
     "tutorialpack:pipeline_files/composite.json5",
     "tutorialpack:pipeline_files/passes.json5",
+  ],
+
+  includeOptional: [
+    {
+      default: "",
+      optionMap: {
+        shadows_enabled: [
+          { from: true, to: "tutorialpack:pipeline_files/skyshadow.json5" }
+        ]
+      }
+    }
   ]
 }
