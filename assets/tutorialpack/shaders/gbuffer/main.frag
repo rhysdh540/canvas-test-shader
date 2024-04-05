@@ -3,6 +3,7 @@
 #include frex:shaders/api/world.glsl
 #include frex:shaders/api/sampler.glsl
 #include frex:shaders/api/fog.glsl
+#include canvas:shaders/pipeline/diffuse.glsl
 
 uniform sampler2D u_glint;
 
@@ -68,26 +69,21 @@ vec4 calculateColor() {
     frx_fragLight.y *= directSkyLight;
     #endif
 
+    bool isGui = frx_isGui && !frx_isHand;
+
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
-
-    #ifndef SHADOW_MAP_PRESENT
-    // Apply diffuse lighting to the block
-    if(frx_fragEnableDiffuse) {
-        float ndotl = dot(frx_vertexNormal, frx_skyLightVector);
-        ndotl = ndotl * 0.5 + 0.5; // clamp
-        ndotl = 0.3 + 0.7 * ndotl; // pad
-        ndotl = min(1.0, ndotl + 0.2); // lighten
-
-        lightmap *= ndotl;
-    }
-    #endif
 
     if(frx_fragEnableAo) {
         lightmap *= frx_fragLight.z;
     }
 
+    // Apply diffuse lighting to the block
+    if(frx_fragEnableDiffuse && !isGui) {
+        lightmap *= p_diffuse(frx_vertexNormal);
+    }
+
     // Apply lighting to blocks in guis
-    if(frx_fragEnableDiffuse && frx_isGui && !frx_isHand) {
+    if(frx_fragEnableDiffuse && isGui) {
         float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
         ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
         lightmap *= ndotl;
