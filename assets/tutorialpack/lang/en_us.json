@@ -6,5 +6,7 @@
   "config.tutorial_pipeline.shadow.enabled": "Sky Shadows",
   "config.tutorial_pipeline.shadow.enabled.desc": "Enable hard shadows from the sky",
   "config.tutorial_pipeline.shadow.resolution": "Shadow Resolution",
-  "config.tutorial_pipeline.shadow.resolution.desc": "The resolution of the shadow map"
+  "config.tutorial_pipeline.shadow.resolution.desc": "The resolution of the shadow map",
+  "config.tutorial_pipeline.shadow.sunlight_angle": "Sunlight Angle",
+  "config.tutorial_pipeline.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks"
 }

@@ -87,6 +87,8 @@
     }
   ],
   sky: {
-    defaultZenithAngle: 15
+    defaultZenithAngle: {
+      option: "sunlight_angle",
+    }
   }
 }

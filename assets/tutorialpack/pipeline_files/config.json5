@@ -16,7 +16,14 @@
           choices: ["512", "1024", "2048", "4096", "8192", "16384"],
           nameKey: "config.tutorial_pipeline.shadow.resolution",
           descriptionKey: "config.tutorial_pipeline.shadow.resolution.desc"
-        }
+        },
+        sunlight_angle: {
+          default: 15,
+          min: 0,
+          max: 90,
+          nameKey: "config.tutorial_pipeline.shadow.sunlight_angle",
+          descriptionKey: "config.tutorial_pipeline.shadow.sunlight_angle.desc"
+        },
       }
     }
   ]
