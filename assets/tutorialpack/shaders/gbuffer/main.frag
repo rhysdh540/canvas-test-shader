@@ -122,9 +122,11 @@ vec4 applySpecialEffects(vec4 color) {
 
 vec4 applyFog(vec4 color) {
     vec3 fogColor = frx_fogColor.rgb;
+    float rainGradient = max(frx_rainGradient, frx_thunderGradient);
+    float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
     float blockDistance = length(frx_vertex.xyz);
-    float fogFactor = smoothstep(frx_fogStart, frx_fogEnd, blockDistance);
+    float fogFactor = smoothstep(fogStart, frx_fogEnd, blockDistance);
 
     return mix(color, vec4(fogColor, color.a), fogFactor);
 }

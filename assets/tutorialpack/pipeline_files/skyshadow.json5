@@ -87,6 +87,6 @@
     }
   ],
   sky: {
-    defaultZenithAngle: 0
+    defaultZenithAngle: 15
   }
 }

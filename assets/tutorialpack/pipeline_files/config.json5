@@ -5,7 +5,7 @@
       includeToken: "tutorialpack:shadow",
       categoryKey: "config.tutorial_pipeline.category.shadow",
       options: {
-        shadows_enabled: { // todo make this work
+        shadows_enabled: {
           default: false,
           nameKey: "config.tutorial_pipeline.shadow.enabled",
           descriptionKey: "config.tutorial_pipeline.shadow.enabled.desc",
