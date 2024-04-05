@@ -19,8 +19,8 @@
         },
         sunlight_angle: {
           default: 15,
-          min: 0,
-          max: 90,
+          min: -45,
+          max: 45,
           nameKey: "config.tutorial_pipeline.shadow.sunlight_angle",
           descriptionKey: "config.tutorial_pipeline.shadow.sunlight_angle.desc"
         },

@@ -1,0 +1,11 @@
+(in no particular order):
+- different aa methods (ms, fx, ss) - possibly taa but i dont really like it
+- rotate/translate sun according to zenith angle
+- cool sky from lumi
+- water reflections/refractions/caustics
+- bloom
+- actually replace lighting maybe
+- block reflections?
+- handheld lights
+- deferred rendering
+- starry night sky (maybe together with the daylight sky from lumi)
