@@ -3,11 +3,14 @@
 #include frex:shaders/api/world.glsl
 #include frex:shaders/api/sampler.glsl
 #include frex:shaders/api/fog.glsl
-#include canvas:shaders/pipeline/diffuse.glsl
+#include canvas:shaders/pipeline/diffuse.glsl // shhh
+#include tutorialpack:shaders/lib/util.glsl
+
+#ifdef SHADOW_MAP_PRESENT
+#include tutorialpack:shaders/lib/shadows.glsl
+#endif
 
 uniform sampler2D u_glint;
-
-in vec4 shadowViewPos;
 
 // In the case of multiple color attachments, you use different layout qualifiers.
 layout(location = 0) out vec4 fragColor;
@@ -16,58 +19,9 @@ layout(location = 0) out vec4 fragColor;
 const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
 const vec3 hurtColor = vec3(1.0, 0.1, 0.1);
 
-// Helper function
-vec3 shadowDist(int cascade) {
-    vec4 c = frx_shadowCenter(cascade);
-    return abs((c.xyz - shadowViewPos.xyz) / c.w);
-}
-
-// Function for obtaining the cascade level
-int selectShadowCascade() {
-    vec3 d3 = shadowDist(3);
-    if (d3.x < 1.0 && d3.y < 1.0 && d3.z < 1.0) {
-        return 3;
-    }
-
-    vec3 d2 = shadowDist(2);
-    if (d2.x < 1.0 && d2.y < 1.0 && d2.z < 1.0) {
-        return 2;
-    }
-
-    vec3 d1 = shadowDist(1);
-    if (d1.x < 1.0 && d1.y < 1.0 && d1.z < 1.0) {
-        return 1;
-    }
-
-    return 0;
-}
-
 vec4 calculateColor() {
     #ifdef SHADOW_MAP_PRESENT
-    // Obtain the cascade level
-    int cascade = selectShadowCascade();
-
-    // Obtain shadow-space position
-    vec4 shadowPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
-
-    // Transform into texture coordinates
-    vec3 shadowTexCoord = shadowPos.xyz * 0.5 + 0.5;
-
-    // Sample the shadow map
-    float directSkyLight = texture(frxs_shadowMap, vec4(shadowTexCoord.xy, cascade, shadowTexCoord.z));
-
-    // Pad the value to prevent absolute darkness
-    directSkyLight = 0.3 + 0.7 * directSkyLight;
-
-    // Apply diffuse lighting to the block
-    // the shadow map isn't perfect, this should fix any discrepancies
-    if(frx_fragEnableDiffuse) {
-        float ndotl = dot(frx_vertexNormal, frx_skyLightVector);
-        directSkyLight *= step(0.0, ndotl);
-    }
-
-    // Blend with the sky light using a simple multiply
-    frx_fragLight.y *= directSkyLight;
+    doShadowStuff();
     #endif
 
     bool isGui = frx_isGui && !frx_isHand;
@@ -120,7 +74,7 @@ vec4 applySpecialEffects(vec4 color) {
     return color;
 }
 
-vec4 applyFog(vec4 color) {
+vec4 applyFog(inout vec4 color) {
     vec3 fogColor = frx_fogColor.rgb;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);

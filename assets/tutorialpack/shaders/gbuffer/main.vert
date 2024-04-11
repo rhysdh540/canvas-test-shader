@@ -1,5 +1,7 @@
 #include frex:shaders/api/vertex.glsl
 #include frex:shaders/api/view.glsl
+#include frex:shaders/api/world.glsl
+#include tutorialpack:shaders/lib/util.glsl
 
 out vec4 shadowViewPos;
 
