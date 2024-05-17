@@ -12,7 +12,6 @@
 
 #define hdr_fromGamma(x) pow(x, vec3(hdr_gamma))
 #define IS_GUI frx_isGui && !frx_isHand
-#define e 1e-10
 
 #include frex:shaders/lib/math.glsl
 

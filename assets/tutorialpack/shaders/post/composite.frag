@@ -103,15 +103,14 @@ void main() {
         composite = blend_colors(composite, color_values[i]);
     }
 
-    // Alpha is mostly ignored, but we will set it to one
-    // Some post-effects may require the alpha to be set to other value
-    // For instance, FXAA3 expects the alpha to contain the luminance of this color
-
     #ifdef POSTERIZATION_ENABLED
     vec3 hsv = rgb2hsv(composite);
     hsv.z = posterize(hsv.z, POSTERIZATION_LEVELS);
     composite = hsv2rgb(hsv);
     #endif
 
+    // Alpha is mostly ignored, but we will set it to one
+    // Some post-effects may require the alpha to be set to other value
+    // For instance, FXAA3 expects the alpha to contain the luminance of this color
     fragColor = vec4(composite, 1.0);
 }
