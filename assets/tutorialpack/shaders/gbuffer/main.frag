@@ -17,11 +17,11 @@ layout(location = 0) out vec4 fragColor;
 
 // The shadow light vector - right and up
 const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
-const vec3 hurtColor = vec3(1.0, 0.1, 0.1);
+const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
 vec4 calculateColor() {
     #ifdef SHADOW_MAP_PRESENT
-    doShadowStuff();
+        doShadowStuff();
     #endif
 
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
@@ -66,7 +66,7 @@ void applySpecialEffects(inout vec4 color) {
     }
     // Apply flash effect if the material is specified to be flashing
     if(frx_matFlash == 1) {
-        color.rgb = vec3(1.0);
+        color.rgb = mix(color.rgb, vec3(1.0), 0.5);
     }
 }
 
@@ -76,9 +76,13 @@ void applyFog(inout vec4 color) {
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
     float blockDistance = length(frx_vertex.xyz);
-    float fogFactor = smoothstep(fogStart, frx_fogEnd, blockDistance);
+    float fogFactor = smoothstep(fogStart, frx_fogEnd - 0.5, blockDistance);
 
-    color = mix(color, vec4(fogColor, color.a), fogFactor);
+    color = mix(color, vec4(fogColor, 0.0), fogFactor);
+
+    if(frx_fogEnd + 1 < blockDistance) {
+        discard;
+    }
 }
 
 void frx_pipelineFragment() {
