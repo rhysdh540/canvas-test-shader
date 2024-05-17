@@ -5,6 +5,8 @@
 #include frex:shaders/api/fog.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
 #include tutorialpack:shaders/lib/util.glsl
+#include tutorialpack:shaders/lib/posterization.glsl
+#include tutorialpack:posterization_config
 
 #ifdef SHADOW_MAP_PRESENT
 #include tutorialpack:shaders/lib/shadows.glsl
@@ -24,8 +26,6 @@ vec4 calculateColor() {
     doShadowStuff();
     #endif
 
-    bool isGui = frx_isGui && !frx_isHand;
-
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
 
     if(frx_fragEnableAo) {
@@ -34,7 +34,7 @@ vec4 calculateColor() {
 
     // Apply diffuse lighting (again)
     if(frx_fragEnableDiffuse) {
-        if(isGui) {
+        if(IS_GUI) {
             float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
             ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
             lightmap *= ndotl;
@@ -88,9 +88,17 @@ vec4 applyFog(inout vec4 color) {
 void frx_pipelineFragment() {
     vec4 color = calculateColor();
     color = applySpecialEffects(color);
-    if(!frx_isGui) {
+    if(!IS_GUI) {
         color = applyFog(color);
     }
+
+    #ifdef POSTERIZATION_ENABLED
+        vec3 hsv = rgb2hsv(color.rgb);
+        hsv.z = posterize(hsv.z, POSTERIZATION_LEVELS);
+        hsv.x = 1.0 - hsv.x;
+        hsv.y -= 0.1;
+        color.rgb = hsv2rgb(hsv);
+    #endif
 
     fragColor = color;
 

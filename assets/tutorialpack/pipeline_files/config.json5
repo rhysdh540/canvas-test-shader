@@ -2,7 +2,7 @@
   options: [
     // shadow
     {
-      includeToken: "tutorialpack:shadow",
+      includeToken: "tutorialpack:shadow_config",
       categoryKey: "config.tutorial_pipeline.category.shadow",
       options: {
         shadows_enabled: {
@@ -23,6 +23,25 @@
           max: 45,
           nameKey: "config.tutorial_pipeline.shadow.sunlight_angle",
           descriptionKey: "config.tutorial_pipeline.shadow.sunlight_angle.desc"
+        },
+      }
+    },
+    //posterization
+    {
+      includeToken: "tutorialpack:posterization_config",
+      categoryKey: "config.tutorial_pipeline.category.posterization",
+      options: {
+        posterization_enabled: {
+          default: false,
+          nameKey: "config.tutorial_pipeline.posterization.enabled",
+          descriptionKey: "config.tutorial_pipeline.posterization.enabled.desc",
+        },
+        posterization_levels: {
+          default: 8,
+          min: 2,
+          max: 256,
+          nameKey: "config.tutorial_pipeline.posterization.levels",
+          descriptionKey: "config.tutorial_pipeline.posterization.levels.desc"
         },
       }
     }
