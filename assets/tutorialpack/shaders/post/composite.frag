@@ -1,6 +1,6 @@
 #include tutorialpack:shaders/post/header.glsl
-#include tutorialpack:shaders/lib/posterization.glsl
-#include tutorialpack:posterization_config
+#include frex:shaders/api/fragment.glsl
+#include tutorialpack:shaders/lib/toon.glsl
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -103,10 +103,14 @@ void main() {
         composite = blend_colors(composite, color_values[i]);
     }
 
-    #ifdef POSTERIZATION_ENABLED
-    vec3 hsv = rgb2hsv(composite);
-    hsv.z = posterize(hsv.z, POSTERIZATION_LEVELS);
-    composite = hsv2rgb(hsv);
+    #if SHADING_TYPE != TOON_SHADING_OFF
+        vec3 hsv = rgb2hsv(composite);
+        #if SHADING_TYPE == TOON_SHADING_POSTERIZATION
+            hsv.z = posterize(hsv.z);
+        #elif SHADING_TYPE == TOON_SHADING_CEL_SHADING
+            celShade(hsv, gl_FragCoord.z);
+        #endif
+        composite = hsv2rgb(hsv);
     #endif
 
     // Alpha is mostly ignored, but we will set it to one

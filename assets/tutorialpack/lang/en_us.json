@@ -2,7 +2,7 @@
   "pipeline.tutorial_pipeline.name": "Tutorial Pipeline",
   "pipeline.tutorial_pipeline.desc": "This is a tutorial pipeline",
 
-  "config.tutorial_pipeline.category.shadow": "Shadow Config",
+  "config.tutorial_pipeline.category.shadow": "Shadows",
 
   "config.tutorial_pipeline.shadow.enabled": "Sky Shadows",
   "config.tutorial_pipeline.shadow.enabled.desc": "Enable hard shadows from the sky",
@@ -14,9 +14,21 @@
   "config.tutorial_pipeline.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
 
 
-  "config.tutorial_pipeline.category.posterization": "Posterization Config",
-  "config.tutorial_pipeline.posterization.enabled": "Posterization",
-  "config.tutorial_pipeline.posterization.enabled.desc": "Enable posterization",
+  "config.tutorial_pipeline.category.toon": "Toon Shading",
+  "config.tutorial_pipeline.shading_type": "Shading Type",
+  "config.tutorial_pipeline.shading_type.desc": "The type of shading to use",
   "config.tutorial_pipeline.posterization.levels": "Posterization Levels",
-  "config.tutorial_pipeline.posterization.levels.desc": "The number of levels to posterize to"
+  "config.tutorial_pipeline.posterization.levels.desc": "The number of levels to posterize to",
+
+  "config.tutorial_pipeline.cel_shading.steps": "Cel Shading Steps",
+  "config.tutorial_pipeline.cel_shading.steps.desc": "The number of brightness levels to use for cel shading",
+
+  "config.tutorial_pipeline.cel_shading.hardness": "Cel Shading Hardness",
+  "config.tutorial_pipeline.cel_shading.hardness.desc": "Edge hardness for cel shading",
+
+  "config.tutorial_pipeline.cel_shading.smooth": "Smooth Cel Shading",
+  "config.tutorial_pipeline.cel_shading.smooth.desc": "Smooth the cel shading effect before filtering",
+
+  "config.tutorial_pipeline.cel_shading.chroma_add": "Chroma Add",
+  "config.tutorial_pipeline.cel_shading.chroma_add.desc": "honestly idk"
 }
