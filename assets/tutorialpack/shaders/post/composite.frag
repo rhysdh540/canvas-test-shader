@@ -1,4 +1,6 @@
 #include tutorialpack:shaders/post/header.glsl
+#include tutorialpack:shaders/lib/posterization.glsl
+#include tutorialpack:posterization_config
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -104,5 +106,12 @@ void main() {
     // Alpha is mostly ignored, but we will set it to one
     // Some post-effects may require the alpha to be set to other value
     // For instance, FXAA3 expects the alpha to contain the luminance of this color
+
+    #ifdef POSTERIZATION_ENABLED
+    vec3 hsv = rgb2hsv(composite);
+    hsv.z = posterize(hsv.z, POSTERIZATION_LEVELS);
+    composite = hsv2rgb(hsv);
+    #endif
+
     fragColor = vec4(composite, 1.0);
 }

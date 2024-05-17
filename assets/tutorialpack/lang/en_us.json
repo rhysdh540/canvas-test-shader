@@ -18,5 +18,5 @@
   "config.tutorial_pipeline.posterization.enabled": "Posterization",
   "config.tutorial_pipeline.posterization.enabled.desc": "Enable posterization",
   "config.tutorial_pipeline.posterization.levels": "Posterization Levels",
-  "config.tutorial_pipeline.posterization.levels.desc": "The number of levels to posterize to",
+  "config.tutorial_pipeline.posterization.levels.desc": "The number of levels to posterize to"
 }

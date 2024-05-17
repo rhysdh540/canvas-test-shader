@@ -5,8 +5,6 @@
 #include frex:shaders/api/fog.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
 #include tutorialpack:shaders/lib/util.glsl
-#include tutorialpack:shaders/lib/posterization.glsl
-#include tutorialpack:posterization_config
 
 #ifdef SHADOW_MAP_PRESENT
 #include tutorialpack:shaders/lib/shadows.glsl
@@ -53,7 +51,7 @@ vec4 calculateColor() {
     return color;
 }
 
-vec4 applySpecialEffects(vec4 color) {
+void applySpecialEffects(inout vec4 color) {
     if(frx_matGlint == 1) {
         // Sample the glint texture and animate it
         vec3 glint = texture(u_glint, fract(frx_normalizeMappedUV(frx_texcoord) * 0.5 + frx_renderSeconds * 0.1)).rgb;
@@ -70,11 +68,9 @@ vec4 applySpecialEffects(vec4 color) {
     if(frx_matFlash == 1) {
         color.rgb = vec3(1.0);
     }
-
-    return color;
 }
 
-vec4 applyFog(inout vec4 color) {
+void applyFog(inout vec4 color) {
     vec3 fogColor = frx_fogColor.rgb;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
@@ -82,23 +78,15 @@ vec4 applyFog(inout vec4 color) {
     float blockDistance = length(frx_vertex.xyz);
     float fogFactor = smoothstep(fogStart, frx_fogEnd, blockDistance);
 
-    return mix(color, vec4(fogColor, color.a), fogFactor);
+    color = mix(color, vec4(fogColor, color.a), fogFactor);
 }
 
 void frx_pipelineFragment() {
     vec4 color = calculateColor();
-    color = applySpecialEffects(color);
+    applySpecialEffects(color);
     if(!IS_GUI) {
-        color = applyFog(color);
+        applyFog(color);
     }
-
-    #ifdef POSTERIZATION_ENABLED
-        vec3 hsv = rgb2hsv(color.rgb);
-        hsv.z = posterize(hsv.z, POSTERIZATION_LEVELS);
-        hsv.x = 1.0 - hsv.x;
-        hsv.y -= 0.1;
-        color.rgb = hsv2rgb(hsv);
-    #endif
 
     fragColor = color;
 
