@@ -92,6 +92,9 @@ void frx_pipelineFragment() {
         applyFog(color);
     }
 
+    if(color.a < 0.0001) discard;
+    color = max(color, vec4(0.0005));
+
     fragColor = color;
 
     // Write position data to the depth attachment
