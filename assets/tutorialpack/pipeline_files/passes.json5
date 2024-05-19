@@ -22,11 +22,10 @@
         ]
       },
 
-      // The copy pass
       {
-        name: "copy",
-        program: "copy",
-        framebuffer: "copy_to_main",
+        name: "post",
+        program: "post",
+        framebuffer: "post",
         samplerImages: ["composite_result"]
       }
     ]

@@ -1,6 +1,6 @@
 #include tutorialpack:shaders/post/header.glsl
 #include frex:shaders/api/fragment.glsl
-#include tutorialpack:shaders/lib/toon.glsl
+#include frex:shaders/api/fog.glsl
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -102,16 +102,6 @@ void main() {
         // Accumulate blended color
         composite = blend_colors(composite, color_values[i]);
     }
-
-    #if SHADING_TYPE != TOON_SHADING_OFF
-        vec3 hsv = rgb2hsv(composite);
-        #if SHADING_TYPE == TOON_SHADING_POSTERIZATION
-            hsv.z = posterize(hsv.z);
-        #elif SHADING_TYPE == TOON_SHADING_CEL_SHADING
-            celShade(hsv, gl_FragCoord.z);
-        #endif
-        composite = hsv2rgb(hsv);
-    #endif
 
     // Alpha is mostly ignored, but we will set it to one
     // Some post-effects may require the alpha to be set to other value
