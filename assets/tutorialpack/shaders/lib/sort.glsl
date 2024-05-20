@@ -1,35 +1,22 @@
-struct Pair {
-    vec4 color;
-    float depth;
-};
-
 //NOTE: all algorithms must sort in descending order
-
-void swap(int i, int j, inout Pair arr[6]) {
-    if(arr[i].depth < arr[j].depth) {
-        Pair temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
-}
 
 // Batcher's odd-even merge sort
 void batcherSort6(inout Pair arr[6]) {
-    swap(0, 1, arr);
-    swap(2, 3, arr);
-    swap(4, 5, arr);
-    swap(0, 2, arr);
-    swap(1, 3, arr);
-    swap(0, 4, arr);
-    swap(1, 5, arr);
-    swap(2, 4, arr);
-    swap(3, 5, arr);
-    swap(1, 2, arr);
-    swap(3, 4, arr);
-    swap(1, 4, arr);
-    swap(3, 2, arr);
-    swap(2, 4, arr);
-    swap(1, 3, arr);
+    compareAndSwap(0, 1, arr);
+    compareAndSwap(2, 3, arr);
+    compareAndSwap(4, 5, arr);
+    compareAndSwap(0, 2, arr);
+    compareAndSwap(1, 3, arr);
+    compareAndSwap(0, 4, arr);
+    compareAndSwap(1, 5, arr);
+    compareAndSwap(2, 4, arr);
+    compareAndSwap(3, 5, arr);
+    compareAndSwap(1, 2, arr);
+    compareAndSwap(3, 4, arr);
+    compareAndSwap(1, 4, arr);
+    compareAndSwap(3, 2, arr);
+    compareAndSwap(2, 4, arr);
+    compareAndSwap(1, 3, arr);
 }
 
 // Insertion sort
@@ -55,9 +42,7 @@ void selectionSort6(inout Pair arr[6]) {
             }
         }
         if(max != i) {
-            Pair temp = arr[i];
-            arr[i] = arr[max];
-            arr[max] = temp;
+            swap(i, max, arr);
         }
     }
 }
@@ -67,17 +52,16 @@ void bubbleSort6(inout Pair arr[6]) {
     for(int i = 0; i < 6; i++) {
         for(int j = 0; j < 6 - i - 1; j++) {
             if(arr[j].depth < arr[j + 1].depth) {
-                Pair temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                swap(j, j + 1, arr);
             }
         }
     }
 }
 
 void sort(inout Pair arr[6]) {
-//    insertionSort6(arr);
-//    selectionSort6(arr);
-//    bubbleSort6(arr);
-    batcherSort6(arr);
+//    insertionSort6(arr); // 0.4-.5
+//    selectionSort6(arr); // 1.5
+//    bubbleSort6(arr); // 2.5
+//    batcherSort6(arr); // 0.4-.5
+    networkSort6(arr); // 0.4-.5
 }
