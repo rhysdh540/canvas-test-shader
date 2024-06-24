@@ -7,7 +7,7 @@
 #include tutorialpack:shaders/lib/util.glsl
 
 #ifdef SHADOW_MAP_PRESENT
-#include tutorialpack:shaders/lib/shadows.glsl
+#include tutorialpack:shaders/lib/shadows.frag
 #endif
 
 uniform sampler2D u_glint;

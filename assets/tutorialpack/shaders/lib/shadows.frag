@@ -10,17 +10,17 @@ vec3 shadowDist(int cascade) {
 
 int selectShadowCascade() {
     vec3 d3 = shadowDist(3);
-    if (d3.x < 1.0 && d3.y < 1.0 && d3.z < 1.0) {
+    if(all(lessThan(d3, vec3(1.0)))) {
         return 3;
     }
 
     vec3 d2 = shadowDist(2);
-    if (d2.x < 1.0 && d2.y < 1.0 && d2.z < 1.0) {
+    if(all(lessThan(d2, vec3(1.0)))) {
         return 2;
     }
 
     vec3 d1 = shadowDist(1);
-    if (d1.x < 1.0 && d1.y < 1.0 && d1.z < 1.0) {
+    if(all(lessThan(d1, vec3(1.0)))) {
         return 1;
     }
 
