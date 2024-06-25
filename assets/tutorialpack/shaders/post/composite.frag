@@ -103,7 +103,7 @@ void main() {
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
-//    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one
