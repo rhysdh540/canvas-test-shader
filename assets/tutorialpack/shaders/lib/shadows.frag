@@ -8,22 +8,16 @@ vec3 shadowDist(int cascade) {
 }
 
 int selectShadowCascade() {
-    vec3 d3 = shadowDist(3);
-    if(all(lessThan(d3, vec3(1.0)))) {
-        return 3;
+    int cascade = 3;
+    while(cascade > 0) {
+        if(all(lessThan(shadowDist(cascade), vec3(1.0)))) {
+            return cascade;
+        }
+
+        cascade--;
     }
 
-    vec3 d2 = shadowDist(2);
-    if(all(lessThan(d2, vec3(1.0)))) {
-        return 2;
-    }
-
-    vec3 d1 = shadowDist(1);
-    if(all(lessThan(d1, vec3(1.0)))) {
-        return 1;
-    }
-
-    return 0;
+    return -1; // no shadow
 }
 
 void doShadowStuff() {

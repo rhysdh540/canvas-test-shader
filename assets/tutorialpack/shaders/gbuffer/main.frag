@@ -17,7 +17,9 @@ const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
 vec4 calculateColor() {
     #ifdef SHADOW_MAP_PRESENT
+    if(frx_worldHasSkylight == 1) {
         doShadowStuff();
+    }
     #endif
 
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
@@ -71,12 +73,12 @@ void applyFog(inout vec4 color) {
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
-    float blockDistance = length(frx_vertex.xyz);
+    float blockDistance = length(frx_vertex.xyz) - 1;
     float fogFactor = smoothstep(fogStart, frx_fogEnd - 0.5, blockDistance);
 
     color = mix(color, vec4(fogColor, 0.0), fogFactor);
 
-    if(frx_fogEnd + 1 < blockDistance) {
+    if(frx_fogEnd < blockDistance) {
         discard;
     }
 }

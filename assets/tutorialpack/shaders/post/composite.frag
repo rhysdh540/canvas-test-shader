@@ -11,52 +11,102 @@ uniform sampler2D u_weather_depth;
 uniform sampler2D u_clouds_color;
 uniform sampler2D u_clouds_depth;
 uniform sampler2D u_particles_color;
-uniform sampler2D u_particles_depth;
+uniform sampler2D u_particles_depth; // 12 samplers (don't go above 16!)
+
+uniform sampler2D u_sun_texture;
 
 in vec2 texcoord;
 
 layout(location = 0) out vec4 fragColor;
 
-// Fabulous sorting algorithm by Ambrosia
+// Fabulous sorting algorithm by Ambrosia, slightly modified
 // https://github.com/ambrosia13/Aerie-Shaders/blob/c01e69ac194a904ccd76c9f17810cb33241d7eb9/assets/aerie/shaders/post/fabulous/sort.frag#L24
 // licensed under MIT
-void insert_layer(inout vec3 background, const in vec4 foreground, inout float backgroundDepth, const in float foregroundDepth) {
+void addLayer(inout vec3 background, const in vec4 foreground, inout float backgroundDepth, const in float foregroundDepth) {
     float isBackgroundCloser = step(foregroundDepth, backgroundDepth);
     backgroundDepth = mix(backgroundDepth, min(foregroundDepth, backgroundDepth), isBackgroundCloser);
 
     background = mix(background, background * (1.0 - foreground.a) + foreground.rgb * foreground.a, isBackgroundCloser);
 }
 
-#define get_color(sampler) texture(sampler, texcoord)
-#define get_depth(sampler) texture(sampler, texcoord).r
+#define getColor(sampler) texture(sampler, texcoord)
+#define getDepth(sampler) texture(sampler, texcoord).r
+
+vec3 getViewDir() {
+    vec3 screenSpacePos = vec3(texcoord, 1.0);
+    vec3 clipSpacePos = screenSpacePos * 2.0 - 1.0;
+    vec4 temp = frx_inverseViewProjectionMatrix * vec4(clipSpacePos, 1.0);
+    return normalize(temp.xyz / temp.w);
+}
 
 void main() {
-    vec4 main_color = get_color(u_main_color);
-    float main_depth = get_depth(u_main_depth);
+    vec4 mainColor = getColor(u_main_color);
+    float mainDepth = getDepth(u_main_depth);
 
-    vec4 translucent_color = get_color(u_translucent_color);
-    float translucent_depth = get_depth(u_translucent_depth);
+    vec4 translucentColor = getColor(u_translucent_color);
+    float translucentDepth = getDepth(u_translucent_depth);
 
-    vec4 entity_color = get_color(u_entity_color);
-    float entity_depth = get_depth(u_entity_depth);
+    vec4 entityColor = getColor(u_entity_color);
+    float entityDepth = getDepth(u_entity_depth);
 
-    vec4 weather_color = get_color(u_weather_color);
-    float weather_depth = get_depth(u_weather_depth);
+    vec4 weatherColor = getColor(u_weather_color);
+    float weatherDepth = getDepth(u_weather_depth);
 
-    vec4 clouds_color = get_color(u_clouds_color);
-    float clouds_depth = get_depth(u_clouds_depth);
+    vec4 cloudsColor = getColor(u_clouds_color);
+    float cloudsDepth = getDepth(u_clouds_depth);
 
-    vec4 particles_color = get_color(u_particles_color);
-    float particles_depth = get_depth(u_particles_depth);
+    vec4 particlesColor = getColor(u_particles_color);
+    float particlesDepth = getDepth(u_particles_depth);
 
-    vec3 composite = main_color.rgb;
-    float compositeDepth = main_depth;
+    // from aerie shaders by ambrosia, somewhat modified
+    // licensed under MIT..? idk
+    if(mainDepth == 1.0) {
+        // This fragment is part of the sky
+        vec3 view_dir = getViewDir();
+        mainColor.rgb = pow(mainColor.rgb, vec3(1.2));
 
-    insert_layer(composite, translucent_color, compositeDepth, translucent_depth);
-    insert_layer(composite, weather_color, compositeDepth, weather_depth);
-    insert_layer(composite, entity_color, compositeDepth, entity_depth);
-    insert_layer(composite, clouds_color, compositeDepth, clouds_depth);
-    insert_layer(composite, particles_color, compositeDepth, particles_depth);
+        if(frx_worldIsOverworld == 1) {
+            vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+            // Raytrace the sun in the sky
+            vec3 sunPosition = sunVector * 1.0;
+
+            vec3 normal = sunVector;
+            vec3 right = normalize(vec3(normal.z, 0.0, -normal.x));
+            vec3 up = normalize(cross(normal, right));
+
+            float t = -20.0 / dot(view_dir, normal);
+            vec3 hitPoint = view_dir * t;
+            vec3 diff = hitPoint - sunPosition;
+            vec2 uv = vec2(dot(diff, right), dot(diff, up));
+            float distToCenter = max(abs(uv.x), abs(uv.y));
+
+            float sun = step(distToCenter, 1.5) * step(t, 0.0);
+            float moon = step(distToCenter, 1.0) * (1.0 - step(t, 0.0));
+
+            if(sun * (1.0 - frx_rainGradient) == 1.0) {
+                // this fragment is in the sun
+                int sunTextureSize = 32;
+                vec2 sunTextcoord = vec2(
+                    0 // wip - get coordinates of this fragment inside of the sun
+                );
+                mainColor.rgb = texture(u_sun_texture, sunTextcoord).rgb;
+            } else {
+                // also temporary - this is a horrible sky color
+                mainColor.rgb = vec3(0.4, 0.4, 1);
+            }
+
+//          if(moon * smoothstep(0.15, 1.0, l) * (1.0 - frx_rainGradient))
+        }
+    }
+
+    vec3 composite = mainColor.rgb;
+    float compositeDepth = mainDepth;
+
+    addLayer(composite, translucentColor, compositeDepth, translucentDepth);
+    addLayer(composite, weatherColor, compositeDepth, weatherDepth);
+    addLayer(composite, entityColor, compositeDepth, entityDepth);
+    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+    addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one
     // Some post-effects may require the alpha to be set to other value

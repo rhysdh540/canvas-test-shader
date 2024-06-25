@@ -8,10 +8,12 @@
     vertexSource: "tutorialpack:shaders/gbuffer/main.vert",
     fragmentSource: "tutorialpack:shaders/gbuffer/main.frag",
     samplers: [
-      "u_glint"
+      "u_glint",
+      "u_sun_texture"
     ],
     samplerImages: [
-      "minecraft:textures/misc/enchanted_item_glint.png"
+      "minecraft:textures/misc/enchanted_item_glint.png",
+      "minecraft:textures/environment/sun.png"
     ]
   },
 
