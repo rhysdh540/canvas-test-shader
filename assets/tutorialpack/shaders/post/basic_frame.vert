@@ -4,7 +4,6 @@ in vec4 in_vertex;
 in vec2 in_uv;
 
 uniform ivec2 frxu_size;
-uniform int frxu_lod;
 
 uniform mat4 frxu_frameProjectionMatrix;
 

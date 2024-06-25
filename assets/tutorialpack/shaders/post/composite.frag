@@ -62,7 +62,7 @@ void main() {
     // licensed under MIT..? idk
     if(mainDepth == 1.0) {
         // This fragment is part of the sky
-        vec3 view_dir = getViewDir();
+        vec3 viewDir = getViewDir();
         mainColor.rgb = pow(mainColor.rgb, vec3(1.2));
 
         if(frx_worldIsOverworld == 1) {
@@ -74,16 +74,15 @@ void main() {
             vec3 right = normalize(vec3(normal.z, 0.0, -normal.x));
             vec3 up = normalize(cross(normal, right));
 
-            float t = -20.0 / dot(view_dir, normal);
-            vec3 hitPoint = view_dir * t;
+            float time = -20.0 / dot(viewDir, normal);
+            vec3 hitPoint = viewDir * time;
             vec3 diff = hitPoint - sunPosition;
             vec2 uv = vec2(dot(diff, right), dot(diff, up));
             float distToCenter = max(abs(uv.x), abs(uv.y));
 
-            float sun = step(distToCenter, 1.5) * step(t, 0.0);
-            float moon = step(distToCenter, 1.0) * (1.0 - step(t, 0.0));
+            bool sun = distToCenter < 6 && time < 0;
 
-            if(sun * (1.0 - frx_rainGradient) == 1.0) {
+            if(sun) {
                 // this fragment is in the sun
                 int sunTextureSize = 32;
                 vec2 sunTextcoord = vec2(
@@ -91,11 +90,9 @@ void main() {
                 );
                 mainColor.rgb = texture(u_sun_texture, sunTextcoord).rgb;
             } else {
-                // also temporary - this is a horrible sky color
-                mainColor.rgb = vec3(0.4, 0.4, 1);
+                // also temporary
+                mainColor.rgb = vec3(87, 155, 255) / 255;
             }
-
-//          if(moon * smoothstep(0.15, 1.0, l) * (1.0 - frx_rainGradient))
         }
     }
 
@@ -105,7 +102,7 @@ void main() {
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
-    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+//    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one
