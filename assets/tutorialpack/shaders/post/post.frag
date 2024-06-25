@@ -1,4 +1,4 @@
-#include tutorialpack:shaders/post/header.glsl
+#include tutorialpack:shaders/lib/header.glsl
 #include tutorialpack:shaders/lib/util.glsl
 #include tutorialpack:shaders/lib/toon.glsl
 

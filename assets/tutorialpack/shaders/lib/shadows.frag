@@ -1,5 +1,4 @@
-#include frex:shaders/api/fragment.glsl
-#include frex:shaders/api/world.glsl
+#include tutorialpack:shaders/lib/header.glsl
 
 in vec4 shadowViewPos;
 

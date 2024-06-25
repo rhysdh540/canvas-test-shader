@@ -1,6 +1,4 @@
-#include tutorialpack:shaders/post/header.glsl
-#include frex:shaders/api/fragment.glsl
-#include frex:shaders/api/fog.glsl
+#include tutorialpack:shaders/lib/header.glsl
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -15,93 +13,50 @@ uniform sampler2D u_clouds_depth;
 uniform sampler2D u_particles_color;
 uniform sampler2D u_particles_depth;
 
-in vec2 texcoord; // texture uv coordinate input
+in vec2 texcoord;
 
-layout(location = 0) out vec4 fragColor; // fragment color output
+layout(location = 0) out vec4 fragColor;
 
-const int array_length = 6; // GLSL arrays must be fixed-length
+// Fabulous sorting algorithm by Ambrosia
+// https://github.com/ambrosia13/Aerie-Shaders/blob/c01e69ac194a904ccd76c9f17810cb33241d7eb9/assets/aerie/shaders/post/fabulous/sort.frag#L24
+// licensed under MIT
+void insert_layer(inout vec3 background, const in vec4 foreground, inout float backgroundDepth, const in float foregroundDepth) {
+    float isBackgroundCloser = step(foregroundDepth, backgroundDepth);
+    backgroundDepth = mix(backgroundDepth, min(foregroundDepth, backgroundDepth), isBackgroundCloser);
 
-int current_length = 0; // The actual length of array
-
-vec4[array_length] color_values;
-float[array_length] depth_values;
-
-void insertionSort(vec4 color, float depth) {
-    // Filter out fully transparent pixel
-    if(color.a == 0.0) {
-        return;
-    }
-
-    // Store the values at the next empty index
-    color_values[current_length] = color;
-    depth_values[current_length] = depth;
-
-    // Store the index of the current item
-    int current = current_length;
-    // Store the index of the item before it
-    int before = current_length - 1;
-
-    // Increment the length of the array
-    current_length++;
-
-    // Loop while there is an item before the current one
-    // and if that item, importantly, has a lower depth.
-    while(current > 0 && depth_values[current] > depth_values[before]) {
-
-        // Swap the current item with the item before it
-        vec4 temp_color = color_values[current];
-        float temp_depth = depth_values[current];
-
-        color_values[current] = color_values[before];
-        depth_values[current] = depth_values[before];
-
-        color_values[before] = temp_color;
-        depth_values[before] = temp_depth;
-
-        // We move to lower index
-        current--;
-        before--;
-    }
+    background = mix(background, background * (1.0 - foreground.a) + foreground.rgb * foreground.a, isBackgroundCloser);
 }
 
-vec3 blend_colors(vec3 destination, vec4 source) {
-    return source.rgb + destination * (1.0 - source.a);
-}
+#define get_color(sampler) texture(sampler, texcoord)
+#define get_depth(sampler) texture(sampler, texcoord).r
 
 void main() {
-    vec4  main_color        = texture(u_main_color       , texcoord);
-    float main_depth        = texture(u_main_depth       , texcoord).r;
-    vec4  translucent_color = texture(u_translucent_color, texcoord);
-    float translucent_depth = texture(u_translucent_depth, texcoord).r;
-    vec4  entity_color      = texture(u_entity_color     , texcoord);
-    float entity_depth      = texture(u_entity_depth     , texcoord).r;
-    vec4  weather_color     = texture(u_weather_color    , texcoord);
-    float weather_depth     = texture(u_weather_depth    , texcoord).r;
-    vec4  clouds_color      = texture(u_clouds_color     , texcoord);
-    float clouds_depth      = texture(u_clouds_depth     , texcoord).r;
-    vec4  particles_color   = texture(u_particles_color  , texcoord);
-    float particles_depth   = texture(u_particles_depth  , texcoord).r;
+    vec4 main_color = get_color(u_main_color);
+    float main_depth = get_depth(u_main_depth);
 
-    // The solid layer is special. We don't want it to be
-    // potentially rejected by the function.
-    color_values[0] = main_color;
-    depth_values[0] = main_depth;
-    current_length = 1;
+    vec4 translucent_color = get_color(u_translucent_color);
+    float translucent_depth = get_depth(u_translucent_depth);
 
-    insertionSort(translucent_color, translucent_depth);
-    insertionSort(entity_color, entity_depth);
-    insertionSort(weather_color, weather_depth);
-    insertionSort(clouds_color, clouds_depth);
-    insertionSort(particles_color, particles_depth);
+    vec4 entity_color = get_color(u_entity_color);
+    float entity_depth = get_depth(u_entity_depth);
 
-    // Initialize color with the bottom layer
-    vec3 composite = color_values[0].rgb;
+    vec4 weather_color = get_color(u_weather_color);
+    float weather_depth = get_depth(u_weather_depth);
 
-    // Iterate through the array
-    for(int i = 1; i < current_length; i++){
-        // Accumulate blended color
-        composite = blend_colors(composite, color_values[i]);
-    }
+    vec4 clouds_color = get_color(u_clouds_color);
+    float clouds_depth = get_depth(u_clouds_depth);
+
+    vec4 particles_color = get_color(u_particles_color);
+    float particles_depth = get_depth(u_particles_depth);
+
+    vec3 composite = main_color.rgb;
+    float compositeDepth = main_depth;
+
+    insert_layer(composite, translucent_color, compositeDepth, translucent_depth);
+    insert_layer(composite, weather_color, compositeDepth, weather_depth);
+    insert_layer(composite, entity_color, compositeDepth, entity_depth);
+    insert_layer(composite, clouds_color, compositeDepth, clouds_depth);
+    insert_layer(composite, particles_color, compositeDepth, particles_depth);
 
     // Alpha is mostly ignored, but we will set it to one
     // Some post-effects may require the alpha to be set to other value

@@ -1,8 +1,4 @@
-#include frex:shaders/api/material.glsl
-#include frex:shaders/api/fragment.glsl
-#include frex:shaders/api/world.glsl
-#include frex:shaders/api/sampler.glsl
-#include frex:shaders/api/fog.glsl
+#include tutorialpack:shaders/lib/header.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
 #include tutorialpack:shaders/lib/util.glsl
 

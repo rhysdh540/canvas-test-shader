@@ -1,5 +1,4 @@
-#include frex:shaders/api/vertex.glsl
-#include frex:shaders/api/view.glsl
+#include tutorialpack:shaders/lib/header.glsl
 
 // Cascade level that is currently rendering, 0-3
 uniform int frxu_cascade;
