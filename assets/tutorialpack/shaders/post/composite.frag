@@ -86,12 +86,13 @@ void main() {
                 // this fragment is in the sun
                 int sunTextureSize = 32;
                 vec2 sunTextcoord = vec2(
-                    0 // wip - get coordinates of this fragment inside of the sun
+//                    0 // wip - get coordinates of this fragment inside of the sun
+                    mix(0, 32, uv.x), mix(0, 32, uv.y)
                 );
-                mainColor.rgb = texture(u_sun_texture, sunTextcoord).rgb;
+//                mainColor.rgb = texture(u_sun_texture, sunTextcoord).rgb;
             } else {
                 // also temporary
-                mainColor.rgb = vec3(87, 155, 255) / 255;
+//                mainColor.rgb = vec3(87, 155, 255) / 255;
             }
         }
     }

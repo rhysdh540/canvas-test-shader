@@ -43,6 +43,6 @@ void doShadowStuff() {
         directSkyLight *= step(0.0, ndotl);
     }
 
-    // Blend with the sky light using a simple multiply
-    frx_fragLight.y *= directSkyLight;
+    float sunsetMultiplier = abs(frx_skyLightTransitionFactor - 0.5) * 2;
+    frx_fragLight.y *= sunsetMultiplier * directSkyLight;
 }
