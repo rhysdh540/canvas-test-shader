@@ -60,6 +60,7 @@ void main() {
 
     // from aerie shaders by ambrosia, somewhat modified
     // licensed under MIT..? idk
+    #ifdef SHADOW_MAP_PRESENT
     if(mainDepth == 1.0) {
         // This fragment is part of the sky
         vec3 viewDir = getViewDir();
@@ -94,6 +95,7 @@ void main() {
             }
         }
     }
+    #endif
 
     vec3 composite = mainColor.rgb;
     float compositeDepth = mainDepth;
