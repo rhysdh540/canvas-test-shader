@@ -80,19 +80,17 @@ void main() {
             vec2 uv = vec2(dot(diff, right), dot(diff, up));
             float distToCenter = max(abs(uv.x), abs(uv.y));
 
-            bool sun = distToCenter < 6 && time < 0;
+            float sunSize = 6;
+            bool inSun = distToCenter < sunSize && time < 0;
 
-            if(sun) {
-                // this fragment is in the sun
-                int sunTextureSize = 32;
-                vec2 sunTextcoord = vec2(
-//                    0 // wip - get coordinates of this fragment inside of the sun
-                    uv.x, uv.y
-                );
-                mainColor.rgb = texture(u_sun_texture, sunTextcoord).rgb;
-            } else {
-                // also temporary
-                mainColor.rgb = frx_vanillaClearColor;
+            if(inSun) {
+                vec2 sunTextcoord = uv / (sunSize * 2) + 0.5; // adjust the uv coordinates to map the texture properly
+                vec4 sunColor = texture(u_sun_texture, sunTextcoord);
+
+                vec4 invSunColor = vec4(1.0) - sunColor;
+                float alpha = 1 - min(min(invSunColor.r, invSunColor.g), invSunColor.b);
+
+                mainColor.rgb = mix(mainColor.rgb, sunColor.rgb * 10, alpha);
             }
         }
     }
