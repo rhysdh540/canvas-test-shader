@@ -73,7 +73,7 @@
   include: [
     "tutorialpack:pipeline_files/main.json5",
     "tutorialpack:pipeline_files/config.json5",
-    "tutorialpack:pipeline_files/fabulous_layers.json5",
+    "tutorialpack:pipeline_files/fabulous.json5",
     "tutorialpack:pipeline_files/composite.json5",
     "tutorialpack:pipeline_files/passes.json5",
   ],
