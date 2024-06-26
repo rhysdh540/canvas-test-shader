@@ -86,6 +86,13 @@
           nameKey: "config.tutorial_pipeline.sky.enabled",
           descriptionKey: "config.tutorial_pipeline.sky.enabled.desc",
         },
+        sun_size: {
+          default: 1.0,
+          min: 0.01,
+          max: 2,
+          nameKey: "config.tutorial_pipeline.sun_size",
+          descriptionKey: "config.tutorial_pipeline.sun_size.desc"
+        },
       }
     }
   ]

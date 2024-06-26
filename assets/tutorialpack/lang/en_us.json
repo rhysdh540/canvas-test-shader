@@ -33,6 +33,10 @@
   "config.tutorial_pipeline.cel_shading.chroma_add.desc": "honestly idk",
 
   "config.tutorial_pipeline.category.sky": "Sky",
+
   "config.tutorial_pipeline.sky.enabled": "Custom Sky",
-  "config.tutorial_pipeline.sky.enabled.desc": "Replace the vanilla sky with a custom sky"
+  "config.tutorial_pipeline.sky.enabled.desc": "Replace the vanilla sky with a custom sky",
+
+  "config.tutorial_pipeline.sun_size": "Sun Size",
+  "config.tutorial_pipeline.sun_size.desc": "The size of the sun"
 }

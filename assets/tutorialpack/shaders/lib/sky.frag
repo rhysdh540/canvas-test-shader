@@ -11,7 +11,8 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
     vec3 sunPosition = sunVector * 1.0;
     vec3 normal = sunVector;
 
-    // Rotate the square to match the sun's angle
+    // Rotate the square to make it more interesting
+    // the higher the zenith angle, the more the sun will be rotated
     float angle = radians(SUNLIGHT_ANGLE);
     float cosAngle = cos(angle), sinAngle = sin(angle);
     mat2 rotationMatrix = mat2(
@@ -19,7 +20,6 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
         sinAngle, cosAngle
     );
 
-    // Rotate right and up vectors
     vec3 right = normalize(vec3(normal.z, 0.0, -normal.x));
     right.xy = rotationMatrix * right.xy;
     vec3 up = normalize(cross(normal, right));
@@ -30,22 +30,24 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
     vec2 uv = vec2(dot(diff, right), dot(diff, up));
     float distToCenter = max(abs(uv.x), abs(uv.y));
 
-    float sunSize = 6;
+    float sunSize = 6 * SUN_SIZE;
     bool inSun = distToCenter < sunSize && t < 0;
 
-    if(inSun) {
-        // Adjust the uv coordinates to map the texture properly
-        vec2 sunTextcoord = uv / (sunSize * 2) + 0.5;
+    if(!inSun) return;
+    // Adjust the uv coordinates to map the texture properly
+    vec2 sunTextcoord = uv / (sunSize * 2) + 0.5;
 
-        // Sample the texture
-        vec3 sunColor = texture(u_sun_texture, sunTextcoord).rgb;
-        vec3 invSunColor = vec3(1.0) - sunColor;
-        float alpha = 1.0 - min(min(invSunColor.r, invSunColor.g), invSunColor.b);
-        sunColor = vec3(1); // temporary
-        color = mix(color, sunColor, alpha);
-    }
+    // Sample the texture
+    vec3 sunColor = texture(u_sun_texture, sunTextcoord).rgb;
+    vec3 invSunColor = vec3(1.0) - sunColor;
+    float alpha = 1.0 - min(min(invSunColor.r, invSunColor.g), invSunColor.b);
+
+    // Lighten the sun color a bit, especially the transparent fake bloom
+    sunColor = clamp(mix(sunColor * 3, sunColor * 7, 1.0 - alpha), 0.0, 1.0);
+
+    // Finally apply the sun color to the sky
+    color = mix(color, sunColor, alpha);
 }
-
 
 vec3 customSky(const in vec3 viewDir) {
     //temp until i can scatter the atmosphere
