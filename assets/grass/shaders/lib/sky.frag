@@ -6,10 +6,7 @@ uniform sampler2D u_sun_texture;
 
 // originally from aerie shaders by ambrosia, licensed under MIT
 // i don't know if the license still applies but i'll this here just in case
-void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
-    // Raytrace the sun in the sky
-    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
-
+void applyCustomSun(inout vec3 color, const in vec3 viewDir, const in vec3 sunVector) {
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
     float angle = radians(SUNLIGHT_ANGLE);
@@ -23,6 +20,7 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
     right.xy = rotationMatrix * right.xy;
     vec3 up = normalize(cross(sunVector, right));
 
+    // Raytrace the sun in the sky
     float t = -20.0 / dot(viewDir, sunVector);
     vec3 hitPoint = viewDir * t;
     vec3 diff = hitPoint - sunVector;
@@ -47,11 +45,16 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
     color = mix(color, sunColor, alpha);
 }
 
-vec3 customSky(const in vec3 viewDir) {
-    //temp until i can scatter the atmosphere
-    vec3 color = frx_fogColor.rgb;
+void scatter(inout vec3 color, const in float depth, const in vec3 viewDir) {
+    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
 
-    applyCustomSun(color, viewDir);
+    if(depth == 1.0) {
+        color = vec3(0); // remove the original sky
+    }
 
-    return color;
+
+
+    if(depth == 1.0) {
+        applyCustomSun(color, viewDir, sunVector);
+    }
 }

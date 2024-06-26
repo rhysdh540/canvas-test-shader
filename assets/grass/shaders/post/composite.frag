@@ -63,9 +63,7 @@ void main() {
     float compositeDepth = mainDepth;
 
     #ifdef CUSTOM_SKY
-    if(compositeDepth == 1.0 && frx_worldIsOverworld == 1) {
-        composite = customSky(getViewDir());
-    }
+    scatter(composite, compositeDepth, getViewDir());
     #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);

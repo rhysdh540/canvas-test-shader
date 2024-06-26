@@ -1,6 +1,7 @@
 #include grass:shaders/lib/header.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
 #include grass:shaders/lib/util.glsl
+#include grass:config/sky
 
 #ifdef SHADOW_MAP_PRESENT
 #include grass:shaders/lib/shadows.frag
@@ -69,7 +70,11 @@ void applySpecialEffects(inout vec4 color) {
 }
 
 void applyFog(inout vec4 color) {
+    #ifdef CUSTOM_SKY
+    vec3 fogColor = vec3(0);
+    #else
     vec3 fogColor = frx_fogColor.rgb;
+    #endif
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
