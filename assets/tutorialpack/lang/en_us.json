@@ -30,5 +30,9 @@
   "config.tutorial_pipeline.cel_shading.smooth.desc": "Smooth the cel shading effect before filtering",
 
   "config.tutorial_pipeline.cel_shading.chroma_add": "Chroma Add",
-  "config.tutorial_pipeline.cel_shading.chroma_add.desc": "honestly idk"
+  "config.tutorial_pipeline.cel_shading.chroma_add.desc": "honestly idk",
+
+  "config.tutorial_pipeline.category.sky": "Sky",
+  "config.tutorial_pipeline.sky.enabled": "Custom Sky",
+  "config.tutorial_pipeline.sky.enabled.desc": "Replace the vanilla sky with a custom sky"
 }

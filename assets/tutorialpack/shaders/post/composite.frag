@@ -1,4 +1,7 @@
 #include tutorialpack:shaders/lib/header.glsl
+#include tutorialpack:config/shadow
+#include tutorialpack:config/sky
+#include tutorialpack:shaders/lib/sky.frag
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -12,8 +15,6 @@ uniform sampler2D u_clouds_color;
 uniform sampler2D u_clouds_depth;
 uniform sampler2D u_particles_color;
 uniform sampler2D u_particles_depth; // 12 samplers (don't go above 16!)
-
-uniform sampler2D u_sun_texture;
 
 in vec2 texcoord;
 
@@ -29,15 +30,15 @@ void addLayer(inout vec3 background, const in vec4 foreground, inout float backg
     background = mix(background, background * (1.0 - foreground.a) + foreground.rgb * foreground.a, isBackgroundCloser);
 }
 
-#define getColor(sampler) texture(sampler, texcoord)
-#define getDepth(sampler) texture(sampler, texcoord).r
-
 vec3 getViewDir() {
     vec3 screenSpacePos = vec3(texcoord, 1.0);
     vec3 clipSpacePos = screenSpacePos * 2.0 - 1.0;
     vec4 temp = frx_inverseViewProjectionMatrix * vec4(clipSpacePos, 1.0);
     return normalize(temp.xyz / temp.w);
 }
+
+#define getColor(sampler) texture(sampler, texcoord)
+#define getDepth(sampler) texture(sampler, texcoord).r
 
 void main() {
     vec4 mainColor = getColor(u_main_color);
@@ -58,42 +59,10 @@ void main() {
     vec4 particlesColor = getColor(u_particles_color);
     float particlesDepth = getDepth(u_particles_depth);
 
-    // from aerie shaders by ambrosia, somewhat modified
-    // licensed under MIT..? idk
-    #ifdef SHADOW_MAP_PRESENT
-    if(mainDepth == 1.0) {
-        // This fragment is part of the sky
-        vec3 viewDir = getViewDir();
-        mainColor.rgb = pow(mainColor.rgb, vec3(1.2));
 
-        if(frx_worldIsOverworld == 1) {
-            vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
-            // Raytrace the sun in the sky
-            vec3 sunPosition = sunVector * 1.0;
-
-            vec3 normal = sunVector;
-            vec3 right = normalize(vec3(normal.z, 0.0, -normal.x));
-            vec3 up = normalize(cross(normal, right));
-
-            float time = -20.0 / dot(viewDir, normal);
-            vec3 hitPoint = viewDir * time;
-            vec3 diff = hitPoint - sunPosition;
-            vec2 uv = vec2(dot(diff, right), dot(diff, up));
-            float distToCenter = max(abs(uv.x), abs(uv.y));
-
-            float sunSize = 6;
-            bool inSun = distToCenter < sunSize && time < 0;
-
-            if(inSun) {
-                vec2 sunTextcoord = uv / (sunSize * 2) + 0.5; // adjust the uv coordinates to map the texture properly
-                vec4 sunColor = texture(u_sun_texture, sunTextcoord);
-
-                vec4 invSunColor = vec4(1.0) - sunColor;
-                float alpha = 1 - min(min(invSunColor.r, invSunColor.g), invSunColor.b);
-
-                mainColor.rgb = mix(mainColor.rgb, sunColor.rgb * 10, alpha);
-            }
-        }
+    #ifdef CUSTOM_SKY
+    if(mainDepth == 1.0 && frx_worldIsOverworld == 1) {
+        mainColor.rgb = customSky(getViewDir());
     }
     #endif
 
@@ -103,7 +72,7 @@ void main() {
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
-    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+//    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one

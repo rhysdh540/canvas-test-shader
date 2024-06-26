@@ -1,5 +1,5 @@
 #include tutorialpack:shaders/lib/util.glsl
-#include tutorialpack:toon_config
+#include tutorialpack:config/toon
 
 float posterize(float val) {
     return floor(val * POSTERIZATION_LEVELS) / POSTERIZATION_LEVELS;

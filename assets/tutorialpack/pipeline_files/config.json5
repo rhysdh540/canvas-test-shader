@@ -2,7 +2,7 @@
   options: [
     // shadow
     {
-      includeToken: "tutorialpack:shadow_config",
+      includeToken: "tutorialpack:config/shadow",
       categoryKey: "config.tutorial_pipeline.category.shadow",
       options: {
         shadows_enabled: {
@@ -29,7 +29,7 @@
 
     //toon shading
     {
-      includeToken: "tutorialpack:toon_config",
+      includeToken: "tutorialpack:config/toon",
       categoryKey: "config.tutorial_pipeline.category.toon",
       options: {
         shading_type: {
@@ -74,6 +74,19 @@
           descriptionKey: "config.tutorial_pipeline.cel_shading.chroma_add.desc"
         }
       },
+    },
+
+    // custom sky
+    {
+      includeToken: "tutorialpack:config/sky",
+      categoryKey: "config.tutorial_pipeline.category.sky",
+      options: {
+        custom_sky: {
+          default: true,
+          nameKey: "config.tutorial_pipeline.sky.enabled",
+          descriptionKey: "config.tutorial_pipeline.sky.enabled.desc",
+        },
+      }
     }
   ]
 }
