@@ -20,7 +20,7 @@ in vec2 texcoord;
 
 layout(location = 0) out vec4 fragColor;
 
-// Fabulous sorting algorithm by Ambrosia, slightly modified
+// Fabulous sorting algorithm by Ambrosia, slightly modified to be 1 function
 // https://github.com/ambrosia13/Aerie-Shaders/blob/c01e69ac194a904ccd76c9f17810cb33241d7eb9/assets/aerie/shaders/post/fabulous/sort.frag#L24
 // licensed under MIT
 void addLayer(inout vec3 background, const in vec4 foreground, inout float backgroundDepth, const in float foregroundDepth) {
@@ -71,7 +71,9 @@ void main() {
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
-    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+    if(cloudsColor.r > 0.5) { // clouds are grayscale, so testing 1 channel is enough
+        addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+    }
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one
