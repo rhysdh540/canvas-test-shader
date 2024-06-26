@@ -59,20 +59,19 @@ void main() {
     vec4 particlesColor = getColor(u_particles_color);
     float particlesDepth = getDepth(u_particles_depth);
 
-
-    #ifdef CUSTOM_SKY
-    if(mainDepth == 1.0 && frx_worldIsOverworld == 1) {
-        mainColor.rgb = customSky(getViewDir());
-    }
-    #endif
-
     vec3 composite = mainColor.rgb;
     float compositeDepth = mainDepth;
+
+    #ifdef CUSTOM_SKY
+    if(compositeDepth == 1.0 && frx_worldIsOverworld == 1) {
+        composite = customSky(getViewDir());
+    }
+    #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
-//    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+    addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 
     // Alpha is mostly ignored, but we will set it to one

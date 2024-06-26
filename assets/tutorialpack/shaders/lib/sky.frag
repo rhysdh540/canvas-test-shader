@@ -39,8 +39,7 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
 
     // Sample the texture
     vec3 sunColor = texture(u_sun_texture, sunTextcoord).rgb;
-    vec3 invSunColor = vec3(1.0) - sunColor;
-    float alpha = 1.0 - min(min(invSunColor.r, invSunColor.g), invSunColor.b);
+    float alpha = max(max(sunColor.r, sunColor.g), sunColor.b);
 
     // Lighten the sun color a bit, especially the transparent fake bloom
     sunColor = clamp(mix(sunColor * 3, sunColor * 7, 1.0 - alpha), 0.0, 1.0);
