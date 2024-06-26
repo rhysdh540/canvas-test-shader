@@ -17,7 +17,7 @@ int selectShadowCascade() {
         cascade--;
     }
 
-    return -1; // no shadow
+    return 0;
 }
 
 void doShadowStuff() {
