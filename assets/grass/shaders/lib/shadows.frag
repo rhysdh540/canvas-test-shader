@@ -1,4 +1,4 @@
-#include tutorialpack:shaders/lib/header.glsl
+#include grass:shaders/lib/header.glsl
 
 in vec4 shadowViewPos;
 

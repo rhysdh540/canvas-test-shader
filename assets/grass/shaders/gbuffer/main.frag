@@ -1,9 +1,9 @@
-#include tutorialpack:shaders/lib/header.glsl
+#include grass:shaders/lib/header.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
-#include tutorialpack:shaders/lib/util.glsl
+#include grass:shaders/lib/util.glsl
 
 #ifdef SHADOW_MAP_PRESENT
-#include tutorialpack:shaders/lib/shadows.frag
+#include grass:shaders/lib/shadows.frag
 #endif
 
 uniform sampler2D u_glint;

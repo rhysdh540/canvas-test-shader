@@ -1,5 +1,5 @@
-#include tutorialpack:shaders/lib/header.glsl
-#include tutorialpack:config/shadow
+#include grass:shaders/lib/header.glsl
+#include grass:config/shadow
 
 uniform sampler2D u_sun_texture;
 

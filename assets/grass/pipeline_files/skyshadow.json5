@@ -5,8 +5,8 @@
     allowEntities: true,
     allowParticles: true,
     supportForwardRender: true,
-    vertexSource: "tutorialpack:shaders/gbuffer/shadowpass.glsl",
-    fragmentSource: "tutorialpack:shaders/gbuffer/shadowpass.glsl",
+    vertexSource: "grass:shaders/gbuffer/shadowpass.glsl",
+    fragmentSource: "grass:shaders/gbuffer/shadowpass.glsl",
     offsetSlopeFactor: 1.1,
     offsetBiasUnits: 4.0,
     cascadeRadius: [

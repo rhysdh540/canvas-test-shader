@@ -1,4 +1,4 @@
-#include tutorialpack:shaders/lib/header.glsl
+#include grass:shaders/lib/header.glsl
 
 #ifdef VERTEX_SHADER
 // Cascade level that is currently rendering, 0-3

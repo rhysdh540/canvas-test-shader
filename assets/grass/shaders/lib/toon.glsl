@@ -1,5 +1,5 @@
-#include tutorialpack:shaders/lib/util.glsl
-#include tutorialpack:config/toon
+#include grass:shaders/lib/util.glsl
+#include grass:config/toon
 
 float posterize(float val) {
     return floor(val * POSTERIZATION_LEVELS) / POSTERIZATION_LEVELS;

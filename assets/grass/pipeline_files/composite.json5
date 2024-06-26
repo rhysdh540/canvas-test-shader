@@ -29,8 +29,8 @@
     // The composite program
     {
       name: "composite",
-      vertexSource: "tutorialpack:shaders/post/basic_frame.vert",
-      fragmentSource: "tutorialpack:shaders/post/composite.frag",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/composite.frag",
       samplers: [
         "u_main_color",          "u_main_depth",
         "u_translucent_color",   "u_translucent_depth",
@@ -45,8 +45,8 @@
     // The copy program
     {
       name: "post",
-      vertexSource: "tutorialpack:shaders/post/basic_frame.vert",
-      fragmentSource: "tutorialpack:shaders/post/post.frag",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/post.frag",
       samplers: ["u_source"]
     }
   ]

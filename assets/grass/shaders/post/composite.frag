@@ -1,7 +1,7 @@
-#include tutorialpack:shaders/lib/header.glsl
-#include tutorialpack:config/shadow
-#include tutorialpack:config/sky
-#include tutorialpack:shaders/lib/sky.frag
+#include grass:shaders/lib/header.glsl
+#include grass:config/shadow
+#include grass:config/sky
+#include grass:shaders/lib/sky.frag
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;

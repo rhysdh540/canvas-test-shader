@@ -5,8 +5,8 @@
   runVanillaClear: true,
 
   materialProgram: {
-    vertexSource: "tutorialpack:shaders/gbuffer/main.vert",
-    fragmentSource: "tutorialpack:shaders/gbuffer/main.frag",
+    vertexSource: "grass:shaders/gbuffer/main.vert",
+    fragmentSource: "grass:shaders/gbuffer/main.frag",
     samplers: [
       "u_glint"
     ],
@@ -71,11 +71,11 @@
   },
 
   include: [
-    "tutorialpack:pipeline_files/main.json5",
-    "tutorialpack:pipeline_files/config.json5",
-    "tutorialpack:pipeline_files/fabulous.json5",
-    "tutorialpack:pipeline_files/composite.json5",
-    "tutorialpack:pipeline_files/passes.json5",
+    "grass:pipeline_files/main.json5",
+    "grass:pipeline_files/config.json5",
+    "grass:pipeline_files/fabulous.json5",
+    "grass:pipeline_files/composite.json5",
+    "grass:pipeline_files/passes.json5",
   ],
 
   includeOptional: [
@@ -83,7 +83,7 @@
       default: "",
       optionMap: {
         shadows_enabled: [
-          { from: true, to: "tutorialpack:pipeline_files/skyshadow.json5" }
+          { from: true, to: "grass:pipeline_files/skyshadow.json5" }
         ]
       }
     }

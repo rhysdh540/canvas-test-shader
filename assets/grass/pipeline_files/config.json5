@@ -2,7 +2,7 @@
   options: [
     // shadow
     {
-      includeToken: "tutorialpack:config/shadow",
+      includeToken: "grass:config/shadow",
       categoryKey: "config.tutorial_pipeline.category.shadow",
       options: {
         shadows_enabled: {
@@ -29,7 +29,7 @@
 
     //toon shading
     {
-      includeToken: "tutorialpack:config/toon",
+      includeToken: "grass:config/toon",
       categoryKey: "config.tutorial_pipeline.category.toon",
       options: {
         shading_type: {
@@ -78,7 +78,7 @@
 
     // custom sky
     {
-      includeToken: "tutorialpack:config/sky",
+      includeToken: "grass:config/sky",
       categoryKey: "config.tutorial_pipeline.category.sky",
       options: {
         custom_sky: {
