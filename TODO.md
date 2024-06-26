@@ -1,7 +1,6 @@
 (in some particular order):
 
 - [x] rotate/translate sun according to zenith angle
-- [ ] make shadows less jarringly long at sunrise/set
 - [ ] different aa methods (ms, fx, ss) - possibly taa but i dont really like it
 - [ ] custom clouds
 - [ ] camera effects
@@ -15,3 +14,8 @@
 - [ ] actually replace lighting maybe
 - [ ] reflections/normals
 - [ ] handheld lights
+
+bugs to fix:
+- shadows are really jarring and flickery during sunrise/sunset
+- sometimes half the world just decides it wants to be in shadow
+- sun rotation doesn't apply with shadows off

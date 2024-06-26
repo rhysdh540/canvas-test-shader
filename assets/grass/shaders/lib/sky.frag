@@ -1,15 +1,14 @@
 #include grass:shaders/lib/header.glsl
 #include grass:config/shadow
+#include grass:config/sky
 
 uniform sampler2D u_sun_texture;
 
-// from aerie shaders by ambrosia, somewhat modified
-// licensed under MIT..? idk if it still counds given how much it's changed
+// originally from aerie shaders by ambrosia, licensed under MIT
+// i don't know if the license still applies but i'll this here just in case
 void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
-    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
     // Raytrace the sun in the sky
-    vec3 sunPosition = sunVector * 1.0;
-    vec3 normal = sunVector;
+    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
 
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
@@ -20,13 +19,13 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir) {
         sinAngle, cosAngle
     );
 
-    vec3 right = normalize(vec3(normal.z, 0.0, -normal.x));
+    vec3 right = normalize(vec3(sunVector.z, 0.0, -sunVector.x));
     right.xy = rotationMatrix * right.xy;
-    vec3 up = normalize(cross(normal, right));
+    vec3 up = normalize(cross(sunVector, right));
 
-    float t = -20.0 / dot(viewDir, normal);
+    float t = -20.0 / dot(viewDir, sunVector);
     vec3 hitPoint = viewDir * t;
-    vec3 diff = hitPoint - sunPosition;
+    vec3 diff = hitPoint - sunVector;
     vec2 uv = vec2(dot(diff, right), dot(diff, up));
     float distToCenter = max(abs(uv.x), abs(uv.y));
 
