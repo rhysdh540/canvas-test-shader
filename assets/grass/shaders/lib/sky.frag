@@ -89,6 +89,7 @@ void scatter(inout vec3 color, in float depth, in float depthBlocks, const in ve
     }
 
     if(isSky) {
+        //TODO: rotate the sun vector by the zenith angle when shadows are off
         applyCustomSun(color, viewDir, sunVector);
     }
 }

@@ -17,7 +17,7 @@ const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
 const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
 vec4 calculateColor() {
-    #ifdef SHADOW_MAP_PRESENT
+    #ifdef SHADOWS_ENABLED
     if(frx_worldHasSkylight == 1) {
         doShadowStuff();
     }
@@ -60,21 +60,13 @@ void applySpecialEffects(inout vec4 color) {
         color.rgb += glint;
     }
     // Apply hurt effect (decrease green and blue) if the material is specified to have hurt
-    if(frx_matHurt == 1) {
-        color.rgb = mix(color.rgb, hurtColor, 0.5);
-    }
+    color.rgb = mix(color.rgb, hurtColor, frx_matHurt * 0.5);
     // Apply flash effect if the material is specified to be flashing
-    if(frx_matFlash == 1) {
-        color.rgb = mix(color.rgb, vec3(1.0), 0.5);
-    }
+    color.rgb = mix(color.rgb, vec3(1.0), frx_matFlash * 0.5);
 }
 
 void applyFog(inout vec4 color) {
-    #ifdef CUSTOM_SKY
-    vec3 fogColor = vec3(0);
-    #else
-    vec3 fogColor = frx_fogColor.rgb;
-    #endif
+    vec3 fogColor = frx_fogColor.rgb * 0.5;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 

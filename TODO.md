@@ -19,4 +19,4 @@ bugs to fix:
 - shadows are really jarring and flickery during sunrise/sunset
 - sun rotation doesn't apply with shadows off
 - sun rotation + posterization is weird
-- caves look really weird and are too bright
+- caves look really weird and are too bright (with shadows on)
