@@ -38,5 +38,13 @@
   "config.grass.sky.enabled.desc": "Replace the vanilla sky with a custom sky",
 
   "config.grass.sun_size": "Sun Size",
-  "config.grass.sun_size.desc": "The size of the sun"
+  "config.grass.sun_size.desc": "The size of the sun",
+
+  "config.grass.category.post": "Post Processing",
+
+  "config.grass.sharpening.enabled": "Sharpening",
+  "config.grass.sharpening.enabled.desc": "Enable Contrast Adaptive Sharpening",
+
+  "config.grass.aa": "Anti Aliasing",
+  "config.grass.aa.desc": "The type of anti-aliasing to use"
 }

@@ -94,6 +94,27 @@
           descriptionKey: "config.grass.sun_size.desc"
         },
       }
+    },
+
+    // post processing
+    {
+      includeToken: "grass:config/post",
+      categoryKey: "config.grass.category.post",
+      options: {
+        sharpening_enabled: {
+          default: false,
+          nameKey: "config.grass.sharpening.enabled",
+          descriptionKey: "config.grass.sharpening.enabled.desc",
+        },
+        anti_aliasing: {
+          default: "off",
+          enum: true,
+          choices: ["off", "fxaa"],
+          nameKey: "config.grass.aa",
+          prefix: "aa_",
+          descriptionKey: "config.grass.aa.desc"
+        },
+      }
     }
   ]
 }

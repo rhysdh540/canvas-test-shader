@@ -1,5 +1,6 @@
 #include grass:shaders/lib/header.glsl
 #include grass:shaders/lib/util.glsl
+#include grass:config/post
 
 // Contrast Adaptive Sharpening from vkBasalt, licensed under MIT
 // https://github.com/DadSchoorse/vkBasalt/blob/master/src/shader/cas.frag.glsl
@@ -13,6 +14,10 @@ const float sharpness = 0.1;
 #define offsetTexture(x, y) textureLodOffset(u_source, texcoord, 0.0f, ivec2(x, y)).rgb
 
 void main() {
+    #ifndef SHARPENING_ENABLED
+    fragColor = texture(u_source, texcoord);
+    return;
+    #endif
     // fetch a 3x3 neighborhood around the pixel 'e',
     //  a b c
     //  d(e)f
