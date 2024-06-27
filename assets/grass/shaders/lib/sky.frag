@@ -83,7 +83,9 @@ void scatter(inout vec3 color, in float depth, in float depthBlocks, const in ve
 
         float rayLength = intersect.y - intersect.x;
 
-        color = vec3(rayLength / atmosphereRadius);
+        float strength = isSky ? 1.2 : 1.3;
+
+        color += (pow(rayLength, strength) / atmosphereRadius) * (frx_fogColor.rgb * 0.3);
     }
 
     if(isSky) {
