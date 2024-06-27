@@ -2,6 +2,7 @@
 #include grass:config/shadow
 #include grass:config/sky
 #include grass:shaders/lib/sky.frag
+#include grass:shaders/lib/spaces.glsl
 
 uniform sampler2D u_main_color;
 uniform sampler2D u_main_depth;
@@ -30,13 +31,6 @@ void addLayer(inout vec3 background, const in vec4 foreground, inout float backg
     background = mix(background, background * (1.0 - foreground.a) + foreground.rgb * foreground.a, isBackgroundCloser);
 }
 
-vec3 getViewDir() {
-    vec3 screenSpacePos = vec3(texcoord, 1.0);
-    vec3 clipSpacePos = screenSpacePos * 2.0 - 1.0;
-    vec4 temp = frx_inverseViewProjectionMatrix * vec4(clipSpacePos, 1.0);
-    return normalize(temp.xyz / temp.w);
-}
-
 #define getColor(sampler) texture(sampler, texcoord)
 #define getDepth(sampler) texture(sampler, texcoord).r
 
@@ -63,7 +57,8 @@ void main() {
     float compositeDepth = mainDepth;
 
     #ifdef CUSTOM_SKY
-    scatter(composite, compositeDepth, getViewDir());
+    float depthBlocks = length(setupSceneSpacePos(texcoord, mainDepth));
+    scatter(composite, compositeDepth, depthBlocks, getViewDir());
     #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);

@@ -1,6 +1,3 @@
-#ifndef UTIL_INCLUDED
-#define UTIL_INCLUDED
-
 #define IS_GUI frx_isGui && !frx_isHand
 #define K_RGB2HSV vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0)
 #define K_HSV2RGB vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0)
@@ -21,4 +18,6 @@ vec3 hsv2rgb(vec3 c) {
     return c.z * mix(K_HSV2RGB.xxx, clamp(p - K_HSV2RGB.xxx, 0.0, 1.0), c.y);
 }
 
-#endif
+float luminance(vec3 color) {
+    return dot(color, vec3(0.2125f, 0.7153f, 0.0721f));
+}

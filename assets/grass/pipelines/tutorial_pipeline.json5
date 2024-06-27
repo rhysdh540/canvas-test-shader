@@ -1,6 +1,6 @@
 {
-  nameKey: "pipeline.tutorial_pipeline.name",
-  descriptionKey: "pipeline.tutorial_pipeline.desc",
+  nameKey: "pipeline.grass.name",
+  descriptionKey: "pipeline.grass.desc",
 
   runVanillaClear: true,
 

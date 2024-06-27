@@ -92,7 +92,7 @@ void frx_pipelineFragment() {
     vec4 color = calculateColor();
     applySpecialEffects(color);
     if(!IS_GUI && frx_fogEnabled == 1) {
-        applyFog(color);
+//        applyFog(color);
     }
 
     fragColor = color;

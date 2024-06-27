@@ -1,4 +1,5 @@
 #include grass:shaders/lib/header.glsl
+#include grass:shaders/lib/spaces.glsl
 #include grass:config/shadow
 #include grass:config/sky
 
@@ -39,22 +40,56 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir, const in vec3 sunVe
     float alpha = max(max(sunColor.r, sunColor.g), sunColor.b);
 
     // Lighten the sun color a bit, especially the transparent fake bloom
-    sunColor = clamp(mix(sunColor * 3, sunColor * 7, 1.0 - alpha), 0.0, 1.0);
+    sunColor = clamp(mix(sunColor * 2, sunColor * 10, 1.0 - alpha), 0.0, 1.0);
 
     // Finally apply the sun color to the sky
     color = mix(color, sunColor, alpha);
 }
 
-void scatter(inout vec3 color, const in float depth, const in vec3 viewDir) {
-    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+const float atmosphereRadius = 500; // in blocks
 
-    if(depth == 1.0) {
+const int steps = 16;
+
+vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in vec3 sphereCenter, const in float sphereRadius) {
+    vec3 oc = rayOrigin - sphereCenter;
+    float b = 2.0 * dot(rayDir, oc);
+    float c = dot(oc, oc) - sphereRadius * sphereRadius;
+    float discriminant = b * b - 4.0 * c;
+
+    if (discriminant < 0.0) {
+        return vec2(-1.0);
+    }
+
+    bool camInsideSphere = dot(oc, oc) < sphereRadius * sphereRadius;
+
+    return vec2(
+        camInsideSphere ? 0.0 : (-b - sqrt(discriminant)) / 2.0,
+        (-b + sqrt(discriminant)) / 2.0
+    );
+}
+
+
+void scatter(inout vec3 color, in float depth, in float depthBlocks, const in vec3 viewDir) {
+    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+    bool isSky = depth == 1.0;
+
+    if(!isSky) return;
+
+    if(isSky) {
         color = vec3(0); // remove the original sky
     }
 
+    vec2 intersect = raySphereIntersect(vec3(0.0, frx_cameraPos.y, 0.0), viewDir, vec3(0.0), atmosphereRadius);
+    if(intersect.x < 0.0) {
+        return;
+    }
 
+    float rayLength = intersect.y - intersect.x;
+    float stepLength = rayLength / float(steps);
 
-    if(depth == 1.0) {
+    color += clamp((rayLength / atmosphereRadius), 0.0, 1.0) * frx_fogColor.rgb;
+
+    if(isSky) {
         applyCustomSun(color, viewDir, sunVector);
     }
 }

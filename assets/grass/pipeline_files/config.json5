@@ -3,26 +3,26 @@
     // shadow
     {
       includeToken: "grass:config/shadow",
-      categoryKey: "config.tutorial_pipeline.category.shadow",
+      categoryKey: "config.grass.category.shadow",
       options: {
         shadows_enabled: {
           default: false,
-          nameKey: "config.tutorial_pipeline.shadow.enabled",
-          descriptionKey: "config.tutorial_pipeline.shadow.enabled.desc",
+          nameKey: "config.grass.shadow.enabled",
+          descriptionKey: "config.grass.shadow.enabled.desc",
         },
         shadow_resolution: {
           default: "1024",
           enum: true,
           choices: ["512", "1024", "2048", "4096", "8192", "16384"],
-          nameKey: "config.tutorial_pipeline.shadow.resolution",
-          descriptionKey: "config.tutorial_pipeline.shadow.resolution.desc"
+          nameKey: "config.grass.shadow.resolution",
+          descriptionKey: "config.grass.shadow.resolution.desc"
         },
         sunlight_angle: {
           default: 15,
           min: -45,
           max: 45,
-          nameKey: "config.tutorial_pipeline.shadow.sunlight_angle",
-          descriptionKey: "config.tutorial_pipeline.shadow.sunlight_angle.desc"
+          nameKey: "config.grass.shadow.sunlight_angle",
+          descriptionKey: "config.grass.shadow.sunlight_angle.desc"
         },
       }
     },
@@ -30,48 +30,48 @@
     //toon shading
     {
       includeToken: "grass:config/toon",
-      categoryKey: "config.tutorial_pipeline.category.toon",
+      categoryKey: "config.grass.category.toon",
       options: {
         shading_type: {
           default: "off",
           enum: true,
           choices: ["off", "posterization", "cel_shading"],
           prefix: "toon_shading_",
-          nameKey: "config.tutorial_pipeline.shading_type",
-          descriptionKey: "config.tutorial_pipeline.shading_type.desc"
+          nameKey: "config.grass.shading_type",
+          descriptionKey: "config.grass.shading_type.desc"
         },
         posterization_levels: {
           default: 8,
           min: 2,
           max: 16,
-          nameKey: "config.tutorial_pipeline.posterization.levels",
-          descriptionKey: "config.tutorial_pipeline.posterization.levels.desc"
+          nameKey: "config.grass.posterization.levels",
+          descriptionKey: "config.grass.posterization.levels.desc"
         },
         cel_steps: {
           default: 8,
           min: 1,
           max: 18,
-          nameKey: "config.tutorial_pipeline.cel_shading.steps",
-          descriptionKey: "config.tutorial_pipeline.cel_shading.steps.desc"
+          nameKey: "config.grass.cel_shading.steps",
+          descriptionKey: "config.grass.cel_shading.steps.desc"
         },
         cel_hardness: {
           default: 8,
           enum: true,
           choices: ["1", "2", "4", "8", "16", "32", "64"],
-          nameKey: "config.tutorial_pipeline.cel_shading.hardness",
-          descriptionKey: "config.tutorial_pipeline.cel_shading.hardness.desc"
+          nameKey: "config.grass.cel_shading.hardness",
+          descriptionKey: "config.grass.cel_shading.hardness.desc"
         },
         smooth_cel: {
           default: true,
-          nameKey: "config.tutorial_pipeline.cel_shading.smooth",
-          descriptionKey: "config.tutorial_pipeline.cel_shading.smooth.desc",
+          nameKey: "config.grass.cel_shading.smooth",
+          descriptionKey: "config.grass.cel_shading.smooth.desc",
         },
         chroma_add: {
           default: "0.20",
           enum: true,
           choices: ["0.0", "0.05", "0.10", "0.15", "0.20", "0.25", "0.30"],
-          nameKey: "config.tutorial_pipeline.cel_shading.chroma_add",
-          descriptionKey: "config.tutorial_pipeline.cel_shading.chroma_add.desc"
+          nameKey: "config.grass.cel_shading.chroma_add",
+          descriptionKey: "config.grass.cel_shading.chroma_add.desc"
         }
       },
     },
@@ -79,19 +79,19 @@
     // custom sky
     {
       includeToken: "grass:config/sky",
-      categoryKey: "config.tutorial_pipeline.category.sky",
+      categoryKey: "config.grass.category.sky",
       options: {
         custom_sky: {
           default: true,
-          nameKey: "config.tutorial_pipeline.sky.enabled",
-          descriptionKey: "config.tutorial_pipeline.sky.enabled.desc",
+          nameKey: "config.grass.sky.enabled",
+          descriptionKey: "config.grass.sky.enabled.desc",
         },
         sun_size: {
           default: 1.0,
           min: 0.01,
           max: 2,
-          nameKey: "config.tutorial_pipeline.sun_size",
-          descriptionKey: "config.tutorial_pipeline.sun_size.desc"
+          nameKey: "config.grass.sun_size",
+          descriptionKey: "config.grass.sun_size.desc"
         },
       }
     }

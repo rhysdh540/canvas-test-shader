@@ -1,42 +1,42 @@
 {
-  "pipeline.tutorial_pipeline.name": "Tutorial Pipeline",
-  "pipeline.tutorial_pipeline.desc": "This is a tutorial pipeline",
+  "pipeline.grass.name": "Grass",
+  "pipeline.grass.desc": "FREX shaders of dubious quality",
 
-  "config.tutorial_pipeline.category.shadow": "Shadows",
+  "config.grass.category.shadow": "Shadows",
 
-  "config.tutorial_pipeline.shadow.enabled": "Sky Shadows",
-  "config.tutorial_pipeline.shadow.enabled.desc": "Enable hard shadows from the sky",
+  "config.grass.shadow.enabled": "Sky Shadows",
+  "config.grass.shadow.enabled.desc": "Enable hard shadows from the sky",
 
-  "config.tutorial_pipeline.shadow.resolution": "Shadow Resolution",
-  "config.tutorial_pipeline.shadow.resolution.desc": "The resolution of the shadow map",
+  "config.grass.shadow.resolution": "Shadow Resolution",
+  "config.grass.shadow.resolution.desc": "The resolution of the shadow map",
 
-  "config.tutorial_pipeline.shadow.sunlight_angle": "Sunlight Angle",
-  "config.tutorial_pipeline.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
+  "config.grass.shadow.sunlight_angle": "Sunlight Angle",
+  "config.grass.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
 
 
-  "config.tutorial_pipeline.category.toon": "Toon Shading",
-  "config.tutorial_pipeline.shading_type": "Shading Type",
-  "config.tutorial_pipeline.shading_type.desc": "The type of shading to use",
-  "config.tutorial_pipeline.posterization.levels": "Posterization Levels",
-  "config.tutorial_pipeline.posterization.levels.desc": "The number of levels to posterize to",
+  "config.grass.category.toon": "Toon Shading",
+  "config.grass.shading_type": "Shading Type",
+  "config.grass.shading_type.desc": "The type of shading to use",
+  "config.grass.posterization.levels": "Posterization Levels",
+  "config.grass.posterization.levels.desc": "The number of levels to posterize to",
 
-  "config.tutorial_pipeline.cel_shading.steps": "Cel Shading Steps",
-  "config.tutorial_pipeline.cel_shading.steps.desc": "The number of brightness levels to use for cel shading",
+  "config.grass.cel_shading.steps": "Cel Shading Steps",
+  "config.grass.cel_shading.steps.desc": "The number of brightness levels to use for cel shading",
 
-  "config.tutorial_pipeline.cel_shading.hardness": "Cel Shading Hardness",
-  "config.tutorial_pipeline.cel_shading.hardness.desc": "Edge hardness for cel shading",
+  "config.grass.cel_shading.hardness": "Cel Shading Hardness",
+  "config.grass.cel_shading.hardness.desc": "Edge hardness for cel shading",
 
-  "config.tutorial_pipeline.cel_shading.smooth": "Smooth Cel Shading",
-  "config.tutorial_pipeline.cel_shading.smooth.desc": "Smooth the cel shading effect before filtering",
+  "config.grass.cel_shading.smooth": "Smooth Cel Shading",
+  "config.grass.cel_shading.smooth.desc": "Smooth the cel shading effect before filtering",
 
-  "config.tutorial_pipeline.cel_shading.chroma_add": "Chroma Add",
-  "config.tutorial_pipeline.cel_shading.chroma_add.desc": "honestly idk",
+  "config.grass.cel_shading.chroma_add": "Chroma Add",
+  "config.grass.cel_shading.chroma_add.desc": "honestly idk",
 
-  "config.tutorial_pipeline.category.sky": "Sky",
+  "config.grass.category.sky": "Sky",
 
-  "config.tutorial_pipeline.sky.enabled": "Custom Sky",
-  "config.tutorial_pipeline.sky.enabled.desc": "Replace the vanilla sky with a custom sky",
+  "config.grass.sky.enabled": "Custom Sky",
+  "config.grass.sky.enabled.desc": "Replace the vanilla sky with a custom sky",
 
-  "config.tutorial_pipeline.sun_size": "Sun Size",
-  "config.tutorial_pipeline.sun_size.desc": "The size of the sun"
+  "config.grass.sun_size": "Sun Size",
+  "config.grass.sun_size.desc": "The size of the sun"
 }
