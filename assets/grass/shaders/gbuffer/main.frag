@@ -1,7 +1,7 @@
 #include grass:shaders/lib/header.glsl
 #include canvas:shaders/pipeline/diffuse.glsl // shhh
 #include grass:shaders/lib/util.glsl
-#include grass:config/sky
+#include grass:config/shadow
 
 #ifdef SHADOW_MAP_PRESENT
 #include grass:shaders/lib/shadows.frag
