@@ -65,7 +65,7 @@ void main() {
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
     addLayer(composite, entityColor, compositeDepth, entityDepth);
     if(cloudsColor.r > 0.5) { // clouds are grayscale, so testing 1 channel is enough
-        addLayer(composite, cloudsColor, compositeDepth, cloudsDepth);
+        addLayer(composite, vec4(vec3(cloudsColor.r), cloudsColor.a), compositeDepth, cloudsDepth);
     }
     addLayer(composite, particlesColor, compositeDepth, particlesDepth);
 

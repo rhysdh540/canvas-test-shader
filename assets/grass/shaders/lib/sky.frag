@@ -73,21 +73,18 @@ void scatter(inout vec3 color, in float depth, in float depthBlocks, const in ve
     vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
     bool isSky = depth == 1.0;
 
-    if(!isSky) return;
-
     if(isSky) {
         color = vec3(0); // remove the original sky
     }
 
     vec2 intersect = raySphereIntersect(vec3(0.0, frx_cameraPos.y, 0.0), viewDir, vec3(0.0), atmosphereRadius);
-    if(intersect.x < 0.0) {
-        return;
+    if(intersect.x >= 0.0) {
+        intersect.y = min(intersect.y, depthBlocks);
+
+        float rayLength = intersect.y - intersect.x;
+
+        color = vec3(rayLength / atmosphereRadius);
     }
-
-    float rayLength = intersect.y - intersect.x;
-    float stepLength = rayLength / float(steps);
-
-    color += clamp((rayLength / atmosphereRadius), 0.0, 1.0) * frx_fogColor.rgb;
 
     if(isSky) {
         applyCustomSun(color, viewDir, sunVector);
