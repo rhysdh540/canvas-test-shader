@@ -1,5 +1,10 @@
+#include grass:shaders/lib/header.glsl
 #include grass:shaders/lib/util.glsl
 #include grass:config/toon
+
+uniform sampler2D u_source;
+in vec2 texcoord;
+layout(location = 0) out vec4 fragColor;
 
 float posterize(float val) {
     return floor(val * POSTERIZATION_LEVELS) / POSTERIZATION_LEVELS;
@@ -44,4 +49,20 @@ void celShade(inout vec3 hsv, float depth) {
         hsv.z = min(1.0, hsv.z + (depth - 0.2) * 0.05);
         hsv.y = max(0.0, hsv.y - (depth - 0.2) * 0.10);
     }
+}
+
+void main() {
+    vec4 color = texture(u_source, texcoord);
+
+    #if SHADING_TYPE != TOON_SHADING_OFF
+    vec3 hsv = rgb2hsv(color.rgb);
+        #if SHADING_TYPE == TOON_SHADING_POSTERIZATION
+            hsv.z = posterize(hsv.z);
+        #elif SHADING_TYPE == TOON_SHADING_CEL_SHADING
+            celShade(hsv, gl_FragCoord.z);
+        #endif
+        color = vec4(hsv2rgb(hsv), color.a);
+    #endif
+
+    fragColor = color;
 }

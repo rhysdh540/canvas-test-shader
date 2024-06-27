@@ -69,7 +69,7 @@ vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in 
 }
 
 
-void scatter(inout vec3 color, in float depth, in float depthBlocks, const in vec3 viewDir) {
+void customSky(inout vec3 color, in float depth, in float depthBlocks, const in vec3 viewDir) {
     vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
     bool isSky = depth == 1.0;
 

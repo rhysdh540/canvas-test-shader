@@ -58,7 +58,7 @@ void main() {
 
     #ifdef CUSTOM_SKY
     float depthBlocks = length(setupSceneSpacePos(texcoord, mainDepth));
-    scatter(composite, compositeDepth, depthBlocks, getViewDir());
+    customSky(composite, compositeDepth, depthBlocks, getViewDir());
     #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);

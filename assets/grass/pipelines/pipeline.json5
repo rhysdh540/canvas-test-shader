@@ -74,8 +74,7 @@
     "grass:pipeline_files/main.json5",
     "grass:pipeline_files/config.json5",
     "grass:pipeline_files/fabulous.json5",
-    "grass:pipeline_files/composite.json5",
-    "grass:pipeline_files/passes.json5",
+    "grass:pipeline_files/post.json5",
   ],
 
   includeOptional: [

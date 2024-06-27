@@ -1,0 +1,99 @@
+{
+  images: [
+    {
+      name: "composite_result",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    },
+    {
+      name: "toon_result",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    },
+    {
+      name: "sharpen_result",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    }
+  ],
+  framebuffers: [
+    {
+      name: "composite",
+      colorAttachments: [{ image: "composite_result", clearColor: 0x00000000 }]
+    },
+    {
+      name: "toon",
+      colorAttachments: [{ image: "toon_result", clearColor: 0x00000000 }]
+    },
+    {
+      name: "sharpen",
+      colorAttachments: [{ image: "sharpen_result", clearColor: 0x00000000 }]
+    },
+    {
+      name: "copy",
+      colorAttachments: [{ image: "main_color", clearColor: 0x00000000 }]
+    }
+  ],
+  programs: [
+    {
+      name: "composite",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/composite.frag",
+      samplers: [
+        "u_main_color",          "u_main_depth",
+        "u_translucent_color",   "u_translucent_depth",
+        "u_entity_color",        "u_entity_depth",
+        "u_weather_color",       "u_weather_depth",
+        "u_clouds_color",        "u_clouds_depth",
+        "u_particles_color",     "u_particles_depth",
+
+        "u_sun_texture"
+      ],
+    },
+    {
+      name: "toon",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/toon.frag",
+      samplers: ["u_source"]
+    },
+    {
+      name: "sharpen",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/sharpen.frag",
+      samplers: ["u_source"]
+    },
+    {
+      name: "copy",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/copy.frag",
+      samplers: ["u_source"]
+    }
+  ]
+}
