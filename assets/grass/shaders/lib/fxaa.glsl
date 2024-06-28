@@ -1,11 +1,12 @@
-vec4 fxaa(sampler2D tex, vec2 fragCoord) {
+// drop in replacement for texture(imag, texcoord) function that fxaa's the image
+vec4 fxaa(sampler2D imag, vec2 texcoord) {
     vec2 inverseResolution = 1.0 / vec2(frxu_size);
-    vec4 frag = texture(tex, fragCoord);
+    vec4 frag = texture(imag, texcoord);
 
-    vec3 rgbNW = texture(tex, fragCoord + vec2(-1.0, -1.0) * inverseResolution).rgb;
-    vec3 rgbNE = texture(tex, fragCoord + vec2(1.0, -1.0) * inverseResolution).rgb;
-    vec3 rgbSW = texture(tex, fragCoord + vec2(-1.0, 1.0) * inverseResolution).rgb;
-    vec3 rgbSE = texture(tex, fragCoord + vec2(1.0, 1.0) * inverseResolution).rgb;
+    vec3 rgbNW = texture(imag, texcoord + vec2(-1.0, -1.0) * inverseResolution).rgb;
+    vec3 rgbNE = texture(imag, texcoord + vec2(1.0, -1.0) * inverseResolution).rgb;
+    vec3 rgbSW = texture(imag, texcoord + vec2(-1.0, 1.0) * inverseResolution).rgb;
+    vec3 rgbSE = texture(imag, texcoord + vec2(1.0, 1.0) * inverseResolution).rgb;
     vec3 rgbM  = frag.rgb;
 
     vec3 luma = vec3(0.299, 0.587, 0.114);
@@ -26,10 +27,10 @@ vec4 fxaa(sampler2D tex, vec2 fragCoord) {
     float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);
     dir = min(vec2(8.0, 8.0), max(vec2(-8.0, -8.0), dir * rcpDirMin)) * inverseResolution;
 
-    vec3 rgbA = 0.5 * (texture(tex, fragCoord + dir * (1.0 / 3.0 - 0.5)).rgb +
-    texture(tex, fragCoord + dir * (2.0 / 3.0 - 0.5)).rgb);
-    vec3 rgbB = rgbA * 0.5 + 0.25 * (texture(tex, fragCoord + dir * 0.5).rgb +
-    texture(tex, fragCoord - dir * 0.5).rgb);
+    vec3 rgbA = 0.5 * (texture(imag, texcoord + dir * (1.0 / 3.0 - 0.5)).rgb +
+        texture(imag, texcoord + dir * (2.0 / 3.0 - 0.5)).rgb);
+    vec3 rgbB = rgbA * 0.5 + 0.25 * (texture(imag, texcoord + dir * 0.5).rgb +
+        texture(imag, texcoord - dir * 0.5).rgb);
 
     float lumaB = dot(rgbB, luma);
     if ((lumaB < lumaMin) || (lumaB > lumaMax)) {
