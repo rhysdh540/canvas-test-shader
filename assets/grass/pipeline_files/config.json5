@@ -24,6 +24,11 @@
           nameKey: "config.grass.shadow.sunlight_angle",
           descriptionKey: "config.grass.shadow.sunlight_angle.desc"
         },
+        smooth_shadows: {
+          default: false,
+          nameKey: "config.grass.shadow.smooth",
+          descriptionKey: "config.grass.shadow.smooth.desc",
+        },
       }
     },
 

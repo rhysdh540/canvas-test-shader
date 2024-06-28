@@ -13,6 +13,8 @@
   "config.grass.shadow.sunlight_angle": "Sunlight Angle",
   "config.grass.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
 
+  "config.grass.shadow.smooth": "Smooth Shadows",
+  "config.grass.shadow.smooth.desc": "Smooth the shadow edges",
 
   "config.grass.category.toon": "Toon Shading",
   "config.grass.shading_type": "Shading Type",

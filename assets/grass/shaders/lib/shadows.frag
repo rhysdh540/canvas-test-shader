@@ -1,4 +1,5 @@
 #include grass:shaders/lib/header.glsl
+#include grass:config/shadow
 
 in vec4 shadowViewPos;
 
@@ -8,15 +9,11 @@ vec3 shadowDist(int cascade) {
 }
 
 int selectShadowCascade() {
-    int cascade = 3;
-    while(cascade > 0) {
-        if(all(lessThan(shadowDist(cascade), vec3(1.0)))) {
+    for (int cascade = 3; cascade > 0; cascade--) {
+        if (all(lessThan(shadowDist(cascade), vec3(1.0)))) {
             return cascade;
         }
-
-        cascade--;
     }
-
     return 0;
 }
 
@@ -28,10 +25,14 @@ void doShadowStuff() {
     vec4 shadowPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
 
     // Transform into texture coordinates
+    #ifndef SMOOTH_SHADOWS
     vec3 shadowTexCoord = shadowPos.xyz * 0.5 + 0.5;
-
-    // Sample the shadow map
     float directSkyLight = texture(frxs_shadowMap, vec4(shadowTexCoord.xy, cascade, shadowTexCoord.z));
+    #else
+    // from lomo by fewizz, licensed under CC0
+    vec3 shadowTexCoord = (shadowPos.xyz /= shadowPos.w) * 0.5 + 0.5;
+    float directSkyLight = 1.0 - float(texture(frxs_shadowMapTexture, vec3(shadowTexCoord.xy, cascade)).r < shadowTexCoord.z);
+    #endif
 
     // Pad the value to prevent absolute darkness
     directSkyLight = 0.3 + 0.7 * directSkyLight;
