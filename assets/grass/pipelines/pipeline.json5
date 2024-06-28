@@ -71,9 +71,10 @@
   },
 
   include: [
-    "grass:pipeline_files/main.json5",
     "grass:pipeline_files/config.json5",
+    "grass:pipeline_files/main.json5",
     "grass:pipeline_files/fabulous.json5",
+    "grass:pipeline_files/composite.json5",
     "grass:pipeline_files/post.json5",
   ],
 
@@ -83,6 +84,15 @@
       optionMap: {
         shadows_enabled: [
           { from: true, to: "grass:pipeline_files/skyshadow.json5" }
+        ]
+      }
+    },
+    {
+      default: "grass:pipeline_files/aa/fxaa_or_no_aa.json5",
+      optionMap: {
+        anti_aliasing: [
+          { from: "off", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" },
+          { from: "fxaa", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" }
         ]
       }
     }

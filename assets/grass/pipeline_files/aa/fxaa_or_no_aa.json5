@@ -1,0 +1,64 @@
+{
+  images: [
+    {
+      name: "fxaa_result",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    }
+  ],
+  framebuffers: [
+    {
+      name: "fxaa",
+      colorAttachments: [{ image: "fxaa_result" }]
+    },
+    {
+      name: "aa_copy",
+      colorAttachments: [{ image: "main_color", clearColor: 0x00000000 }]
+    }
+  ],
+  programs: [
+    {
+      name: "fxaa",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/aa/fxaa.frag",
+      samplers: ["u_source"]
+    },
+    {
+      name: "aa_copy",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/copy.frag",
+      samplers: ["u_source"]
+    }
+  ],
+
+  afterRenderHand: {
+    passes: [
+      {
+        name: "fxaa",
+        program: "fxaa",
+        framebuffer: "fxaa",
+        samplerImages: ["sharpen_result"]
+      },
+
+      {
+        name: "aa_copy",
+        program: "aa_copy",
+        framebuffer: "aa_copy",
+        samplerImages: ["fxaa_result"]
+      }
+    ]
+  },
+
+  includeOptional: [
+
+  ]
+}

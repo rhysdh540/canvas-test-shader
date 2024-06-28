@@ -14,7 +14,7 @@
   "config.grass.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
 
   "config.grass.shadow.smooth": "Smooth Shadows",
-  "config.grass.shadow.smooth.desc": "Smooth the shadow edges",
+  "config.grass.shadow.smooth.desc": "Smooth the edges of shadows, especially at low resolutions",
 
   "config.grass.category.toon": "Toon Shading",
   "config.grass.shading_type": "Shading Type",
@@ -44,8 +44,11 @@
 
   "config.grass.category.post": "Post Processing",
 
-  "config.grass.sharpening.enabled": "Sharpening",
-  "config.grass.sharpening.enabled.desc": "Enable Contrast Adaptive Sharpening",
+  "config.grass.sharpening": "Sharpening",
+  "config.grass.sharpening.desc": "Enable Contrast Adaptive Sharpening or Denoised Luma Sharpening",
+
+  "config.grass.sharpness": "Sharpness",
+  "config.grass.sharpness.desc": "The strength of the sharpening effect",
 
   "config.grass.aa": "Anti Aliasing",
   "config.grass.aa.desc": "The type of anti-aliasing to use"

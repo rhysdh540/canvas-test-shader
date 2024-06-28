@@ -1,7 +1,7 @@
 (in some particular order):
 
 - [x] rotate/translate sun according to zenith angle
-- [ ] different aa methods (ms, fx, ss) - possibly taa but i dont really like it
+- [ ] different aa methods (sm, fx, ss) - possibly taa but i dont really like it
 - [ ] custom clouds
 - [ ] camera effects
   - [ ] bloom

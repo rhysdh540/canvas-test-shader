@@ -27,24 +27,10 @@
       },
 
       {
-        name: "toon",
-        program: "toon",
-        framebuffer: "toon",
-        samplerImages: ["composite_result"]
-      },
-
-      {
-        name: "sharpen",
-        program: "sharpen",
-        framebuffer: "sharpen",
-        samplerImages: ["toon_result"]
-      },
-
-      {
         name: "copy",
         program: "copy",
         framebuffer: "copy",
-        samplerImages: ["sharpen_result"],
+        samplerImages: ["composite_result"],
       }
     ]
   }
