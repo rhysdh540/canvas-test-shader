@@ -24,13 +24,11 @@ void doShadowStuff() {
     // Obtain shadow-space position
     vec4 shadowPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
 
-    // Transform into texture coordinates
-    #ifndef SMOOTH_SHADOWS
     vec3 shadowTexCoord = shadowPos.xyz * 0.5 + 0.5;
+    #ifndef SMOOTH_SHADOWS
     float directSkyLight = texture(frxs_shadowMap, vec4(shadowTexCoord.xy, cascade, shadowTexCoord.z));
     #else
     // from lomo by fewizz, licensed under CC0
-    vec3 shadowTexCoord = (shadowPos.xyz /= shadowPos.w) * 0.5 + 0.5;
     float directSkyLight = 1.0 - float(texture(frxs_shadowMapTexture, vec3(shadowTexCoord.xy, cascade)).r < shadowTexCoord.z);
     #endif
 
