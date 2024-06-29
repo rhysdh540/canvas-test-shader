@@ -57,8 +57,13 @@ void main() {
     float compositeDepth = mainDepth;
 
     #ifdef CUSTOM_SKY
+    vec3 viewDir = getViewDir();
     float depthBlocks = length(setupSceneSpacePos(texcoord, mainDepth));
-    customSky(composite, compositeDepth, depthBlocks, getViewDir());
+    customSky(composite, compositeDepth, depthBlocks, viewDir);
+    if(compositeDepth == 1.0) {
+        vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+        applyCustomSun(composite, viewDir, sunVector);
+    }
     #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
