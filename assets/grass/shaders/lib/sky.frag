@@ -7,6 +7,8 @@ uniform sampler2D u_sun_texture;
 
 // originally from aerie shaders by ambrosia, licensed under MIT
 // i don't know if the license still applies but i'll this here just in case
+// TODO also this doesn't actually rotate it correctly
+// and it doesn't rotate at all when shadows are off (will have to rotate sunVector as well)
 void applyCustomSun(inout vec3 color, const in vec3 viewDir, const in vec3 sunVector) {
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
@@ -64,15 +66,14 @@ vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in 
     );
 }
 
-#define MAIN_STEPS 32
-#define LIGHT_STEPS 8
+#define MAIN_STEPS 10
+#define LIGHT_STEPS 10
 
-const float atmosphereRadius = 500.0; // in blocks
-const float densityFalloff = 0.0;
+const float atmosphereRadius = 100.0; // in blocks
+const float densityFalloff = 1.0;
 
 float densityAtPoint(const in vec3 point) {
-    float altitude = length(point) - 63; // use the sea level as the base
-    float height01 = altitude / atmosphereRadius;
+    float height01 = (length(point)) / atmosphereRadius;
     return exp(-height01 * densityFalloff) * (1.0 - height01);
 }
 
@@ -90,24 +91,20 @@ float opticalDepth(const in vec3 point, const in vec3 rayDir, const in float ray
     return opticalDepth;
 }
 
-float calculateLight(const in vec3 cameraPos, const in float depth, const in vec3 viewDir, const in vec3 sunDir) {
-    vec2 intersect = raySphereIntersect(cameraPos, viewDir, vec3(0.0), atmosphereRadius);
-    if(intersect.x > 0.0) {
+float calculateLight(const in vec3 cameraPos, const in vec2 intersect, const in vec3 viewDir, const in vec3 sunDir) {
+    if(intersect.x < 0.0) {
         return 0.0;
     }
-
-    intersect.y = min(intersect.y, depth);
 
     float rayLength = intersect.y - intersect.x;
 
     float stepSize = rayLength / float(MAIN_STEPS - 1);
-    vec3 point = cameraPos;
+    vec3 point = cameraPos + viewDir * intersect.x;
     float light = 0;
 
     for (int i = 0; i < MAIN_STEPS; i++) {
         // first get the distance from the current point to the edge of the atmosphere
         float sunRayLength = raySphereIntersect(point, sunDir, vec3(0.0), atmosphereRadius).y;
-        if(sunRayLength > 198 && sunRayLength < 202) return 1.0;
         float sunRayOpticalDepth = opticalDepth(point, sunDir, sunRayLength);
         float viewRayOpticalDepth = opticalDepth(point, -viewDir, stepSize * i);
 
@@ -130,13 +127,16 @@ void customSky(inout vec3 color, in float depth, in float depthBlocks, const in 
         color = vec3(0); // remove the original sky
     }
 
-    vec2 intersect = raySphereIntersect(vec3(0.0, frx_cameraPos.y, 0.0), viewDir, vec3(0.0), atmosphereRadius);
+    vec3 cameraPos = vec3(0.0, frx_cameraPos.y, 0.0);
+
+    vec2 intersect = raySphereIntersect(cameraPos, viewDir, vec3(0.0), atmosphereRadius);
     intersect.y = min(intersect.y, depthBlocks);
 
-    color = intersect.y / (atmosphereRadius * 2) * vec3(viewDir.rgb * 0.5 + 0.5);
+    // cool funny rainbow atmosphere
+    float light = calculateLight(cameraPos, intersect, viewDir, sunVector);
+    color = color * (1.0 - light) + light;
 
     if(isSky) {
-        //TODO: rotate the sun vector by the zenith angle when shadows are off
         applyCustomSun(color, viewDir, sunVector);
     }
 }

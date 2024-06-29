@@ -65,6 +65,7 @@ void applySpecialEffects(inout vec4 color) {
     color.rgb = mix(color.rgb, vec3(1.0), frx_matFlash * 0.5);
 }
 
+// TODO: make this blend well with the custom sky
 void applyFog(inout vec4 color) {
     vec3 fogColor = frx_fogColor.rgb * 0.5;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
@@ -84,7 +85,7 @@ void frx_pipelineFragment() {
     vec4 color = calculateColor();
     applySpecialEffects(color);
     if(!IS_GUI && frx_fogEnabled == 1) {
-        applyFog(color);
+//        applyFog(color);
     }
 
     fragColor = color;
