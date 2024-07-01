@@ -45,7 +45,7 @@
   "config.grass.category.post": "Post Processing",
 
   "config.grass.sharpening": "Sharpening",
-  "config.grass.sharpening.desc": "Enable Contrast Adaptive Sharpening or Denoised Luma Sharpening",
+  "config.grass.sharpening.desc": "Increases the contrast between edges to create the illusion of higher detail.",
 
   "config.grass.sharpness": "Sharpness",
   "config.grass.sharpness.desc": "The strength of the sharpening effect",

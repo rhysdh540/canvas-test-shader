@@ -109,7 +109,7 @@
         sharpening: {
           default: "off",
           enum: true,
-          choices: ["off", "cas", "dls"],
+          choices: ["off", "basic", "cas", "dls"],
           prefix: "sharpening_",
           nameKey: "config.grass.sharpening",
           descriptionKey: "config.grass.sharpening.desc",

@@ -2,6 +2,20 @@
 
 const float denoise = 0.17;
 
+vec4 basic(const in sampler2D image, const in vec2 texcoord) {
+    vec4 color = texture(image, texcoord);
+
+    float neighbor = SHARPNESS * -1;
+    float center = SHARPNESS * 4 + 1;
+
+    vec3 n = offsetTexture(0, 1).rgb;
+    vec3 e = offsetTexture(1, 0).rgb;
+    vec3 s = offsetTexture(0, -1).rgb;
+    vec3 w = offsetTexture(-1, 0).rgb;
+
+    return vec4(n * neighbor + e * neighbor + color.rgb * center + s * neighbor + w * neighbor, color.a);
+}
+
 // Contrast Adaptive Sharpening from vkBasalt, licensed under MIT
 // https://github.com/DadSchoorse/vkBasalt/blob/master/src/shader/cas.frag.glsl
 
@@ -11,7 +25,6 @@ vec4 cas(const in sampler2D image, const in vec2 texcoord) {
     //  d(e)f
     //  g h i
     vec4 inputColor = textureLod(image, texcoord, 0.0f);
-    float alpha = inputColor.a;
 
     vec3 a = offsetTexture(-1,-1).rgb, b = offsetTexture( 0,-1).rgb, c = offsetTexture( 1,-1).rgb;
     vec3 d = offsetTexture(-1, 0).rgb,      e = inputColor.rgb,      f = offsetTexture( 1, 0).rgb;
@@ -49,7 +62,7 @@ vec4 cas(const in sampler2D image, const in vec2 texcoord) {
     vec3 window = (b + d) + (f + h);
     vec3 outColor = clamp((window * wRGB + e) * rcpWeightRGB, 0, 1);
 
-    return vec4(outColor, alpha);
+    return vec4(outColor, inputColor.a);
 }
 
 // Denoised Luma Sharpening from vkBasalt

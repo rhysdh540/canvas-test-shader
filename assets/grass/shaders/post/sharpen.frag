@@ -8,7 +8,9 @@ in vec2 texcoord;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    #if SHARPENING == SHARPENING_CAS
+    #if SHARPENING == SHARPENING_BASIC
+    fragColor = basic(u_source, texcoord);
+    #elif SHARPENING == SHARPENING_CAS
     fragColor = cas(u_source, texcoord);
     #elif SHARPENING == SHARPENING_DLS
     fragColor = dls(u_source, texcoord);
