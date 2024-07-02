@@ -2,7 +2,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ public class NetworkSortGen {
 		File in = new File("network_sorts.txt");
 		File out = new File("assets/tutorialpack/shaders/lib/network_sorts.gen.glsl");
 
-		List<String> lines = Files.readAllLines(in.toPath());
 		StringBuilder outContent = new StringBuilder();
 
 		outContent.append("""
@@ -39,22 +37,25 @@ public class NetworkSortGen {
 
 		int i = 1;
 
-		for(String ordering : lines) {
-			List<Map.Entry<Integer, Integer>> swaps = new ArrayList<>();
+		try(var stream = Files.newBufferedReader(in.toPath())) {
+			while(stream.ready()) {
+				String ordering = stream.readLine();
+				List<Map.Entry<Integer, Integer>> swaps = new ArrayList<>();
 
-			for(String swap : ordering.substring(2, ordering.length() - 2).split("]\\[")) {
-				String[] parts = swap.split(" ");
-				swaps.add(Map.entry(Integer.parseInt(parts[0]), Integer.parseInt(parts[1])));
+				for(String swap : ordering.substring(2, ordering.length() - 2).split("]\\[")) {
+					String[] parts = swap.split(" ");
+					swaps.add(Map.entry(Integer.parseInt(parts[0]), Integer.parseInt(parts[1])));
+				}
+
+				// generate the GLSL code
+				outContent.append("void networkSort").append(i).append("(inout Pair arr[6]) {\n");
+				for(var swap : swaps) {
+					outContent.append("  compareAndSwap(").append(swap.getKey()).append(", ").append(swap.getValue()).append(", arr);\n");
+				}
+
+				outContent.append("}\n\n");
+				i++;
 			}
-
-			// generate the GLSL code
-			outContent.append("void networkSort").append(i).append("(inout Pair arr[6]) {\n");
-			for(var swap : swaps) {
-				outContent.append("  compareAndSwap(").append(swap.getKey()).append(", ").append(swap.getValue()).append(", arr);\n");
-			}
-
-			outContent.append("}\n\n");
-			i++;
 		}
 
 		Files.writeString(out.toPath(), outContent);
