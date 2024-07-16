@@ -86,7 +86,7 @@ void customSky(inout vec3 color, in float depth, in float depthBlocks, const in 
 
         float strength = isSky ? 1.2 : 1.3;
 
-        color += (pow(rayLength, strength) / atmosphereRadius) * (frx_fogColor.rgb * 0.3);
+        color += (pow(rayLength, strength) / atmosphereRadius) * ((frx_fogColor.rgb * 0.3) + vec3(0, 0, 0.2));
     }
 
     if(isSky) {
