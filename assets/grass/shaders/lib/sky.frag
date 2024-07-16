@@ -7,8 +7,7 @@ uniform sampler2D u_sun_texture;
 
 // originally from aerie shaders by ambrosia, licensed under MIT
 // i don't know if the license still applies but i'll keep this here just in case
-// TODO it doesn't rotate at all when shadows are off (will have to rotate sunVector as well)
-void applyCustomSun(inout vec3 color, const in vec3 viewDir, const in vec3 sunVector) {
+void applyCustomSun(inout vec3 color, const in vec3 viewDir, in vec3 sunVector) {
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
     float angle = radians(SUNLIGHT_ANGLE);
@@ -17,6 +16,10 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir, const in vec3 sunVe
         cosAngle, (SUNLIGHT_ANGLE < 0 ? -sinAngle : sinAngle),
         (SUNLIGHT_ANGLE < 0 ? sinAngle : -sinAngle), cosAngle
     );
+
+    #ifndef SHADOWS_ENABLED
+    sunVector = vec3(sunVector.x, sunVector.y * cos(angle) + sunVector.z * sin(angle), -sunVector.y * sin(angle) + sunVector.z * cos(angle));
+    #endif
 
     vec3 right = normalize(vec3(sunVector.z, 0.0, -sunVector.x));
     right.xy = rotationMatrix * right.xy;
