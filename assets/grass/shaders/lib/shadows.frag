@@ -1,47 +1,75 @@
 #include grass:shaders/lib/header.glsl
 #include grass:config/shadow
 
-in vec4 shadowViewPos;
+//in vec4 shadowViewPos;
 
-vec3 shadowDist(int cascade) {
+vec3 shadowDist(int cascade, vec4 pos) {
     vec4 c = frx_shadowCenter(cascade);
-    return abs((c.xyz - shadowViewPos.xyz) / c.w);
+    return abs((c.xyz - pos.xyz) / c.w);
 }
 
-int selectShadowCascade() {
+int selectShadowCascade(vec4 pos) {
     for (int cascade = 3; cascade > 0; cascade--) {
-        if (all(lessThan(shadowDist(cascade), vec3(1.0)))) {
+        if (all(lessThan(shadowDist(cascade, pos), vec3(1.0)))) {
             return cascade;
         }
     }
     return 0;
 }
 
-void doShadowStuff() {
-    // Obtain the cascade level
-    int cascade = selectShadowCascade();
+vec3 setupShadowPos(in vec3 sceneSpacePos, in vec3 bias, out int cascade) {
+    vec4 shadowViewPos = frx_shadowViewMatrix * vec4(sceneSpacePos, 1.0);
+    cascade = selectShadowCascade(shadowViewPos);
 
-    // Obtain shadow-space position
-    vec4 shadowPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
+    shadowViewPos = frx_shadowViewMatrix * vec4(sceneSpacePos + bias * (1.5 + (3 - cascade)), 1.0);
 
-    vec3 shadowTexCoord = shadowPos.xyz * 0.5 + 0.5;
+    vec4 shadowClipPos = frx_shadowProjectionMatrix(cascade) * shadowViewPos;
+    vec3 shadowScreenPos = (shadowClipPos.xyz / shadowClipPos.w) * 0.5 + 0.5;
+
+    return shadowScreenPos;
+}
+
+float shadowTexture(vec2 pos, float threshold, int cascade) {
     #ifndef SMOOTH_SHADOWS
-    float directSkyLight = texture(frxs_shadowMap, vec4(shadowTexCoord.xy, cascade, shadowTexCoord.z));
+    return texture(frxs_shadowMap, vec4(pos, cascade, threshold));
     #else
     // from lomo by fewizz, licensed under CC0
-    float directSkyLight = 1.0 - float(texture(frxs_shadowMapTexture, vec3(shadowTexCoord.xy, cascade)).r < shadowTexCoord.z);
+    return 1.0 - float(texture(frxs_shadowMapTexture, vec3(pos, cascade)).r < threshold);
     #endif
+}
 
-    // Pad the value to prevent absolute darkness
-    directSkyLight = 0.3 + 0.7 * directSkyLight;
+vec2 diskSampling(float i, float n, float phi) {
+    float theta = (i + phi) / n;
+    float thing = theta * TAU * n * 1.618033988749894;
+    return vec2(sin(thing), cos(thing)) * theta;
+}
 
-    // Apply diffuse lighting to the block
-    // the shadow map isn't perfect, this should fix any discrepancies
-    if(frx_fragEnableDiffuse) {
-        float ndotl = dot(frx_vertexNormal, frx_skyLightVector);
-        directSkyLight *= step(0.0, ndotl);
+// from aerie by ambrosia, licensed under MIT
+// slightly modified
+vec3 shadowLightmap() {
+    int cascade = -1;
+
+    vec3 shadowScreenPos = setupShadowPos(frx_vertex.xyz, frx_vertexNormal.xyz * (0.025), cascade);
+
+    float shadowBlurAmount = mix(2.0, 5.0, float(frx_matDisableDiffuse));
+    float shadow = 0.0;
+
+    const int shadowSamples = SHADOW_SAMPLES;
+    for(int i = 0; i < shadowSamples; i++) {
+        vec2 offset = diskSampling(i, shadowSamples, 1.0);
+
+        vec2 newScreenPos = shadowScreenPos.xy + offset * shadowBlurAmount / SHADOW_RESOLUTION;
+        shadow += shadowTexture(newScreenPos, shadowScreenPos.z, cascade);
     }
+    shadow /= shadowSamples;
 
-    float sunsetMultiplier = abs(frx_skyLightTransitionFactor - 0.5) * 2;
-    frx_fragLight.y *= sunsetMultiplier * directSkyLight;
+    float NdotL = mix(clamp(dot(frx_vertexNormal, frx_skyLightVector), 0, 1), 1.0, frx_matDisableDiffuse);
+
+    vec3 skyLight = texture(frxs_lightmap, vec2(1.0 / 16.0, frx_fragLight.y)).rgb * 0.75;
+    vec3 directLight = frx_skyLightAtmosphericColor * shadow * sqrt(frx_skyLightTransitionFactor) * NdotL * 0.5;
+
+    vec3 blockLight = texture(frxs_lightmap, vec2(frx_fragLight.x, 1.0 / 16.0)).rgb;
+
+    vec3 totalSkyLight = skyLight + directLight;
+    return max(totalSkyLight, blockLight) * frx_fragLight.z;
 }

@@ -18,12 +18,10 @@ const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
 vec4 calculateColor() {
     #ifdef SHADOWS_ENABLED
-    if(frx_worldHasSkylight == 1) {
-        doShadowStuff();
-    }
-    #endif
-
+    vec3 lightmap = shadowLightmap();
+    #else
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
+    #endif
 
     if(frx_fragEnableAo) {
         lightmap *= frx_fragLight.z;

@@ -5,10 +5,13 @@
   "config.grass.category.shadow": "Shadows",
 
   "config.grass.shadow.enabled": "Sky Shadows",
-  "config.grass.shadow.enabled.desc": "Enable hard shadows from the sky",
+  "config.grass.shadow.enabled.desc": "Enable shadows from the sky",
 
   "config.grass.shadow.resolution": "Shadow Resolution",
-  "config.grass.shadow.resolution.desc": "The resolution of the shadow map",
+  "config.grass.shadow.resolution.desc": "The resolution of the shadow map. Higher = better quality, lower = better performance",
+
+  "config.grass.shadow.samples": "Shadow Samples",
+  "config.grass.shadow.samples.desc": "The number of samples to use for shadow mapping. Higher = blurrier",
 
   "config.grass.shadow.sunlight_angle": "Sunlight Angle",
   "config.grass.shadow.sunlight_angle.desc": "The angle that the sunlight hits blocks",
