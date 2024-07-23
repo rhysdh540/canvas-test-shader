@@ -61,8 +61,7 @@ void main() {
 
     if(compositeDepth == 1.0) {
         composite = texture(u_sky_color, texcoord).rgb;
-        vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
-        applyCustomSun(u_sun_texture, composite, getViewDir(), sunVector);
+        applyCustomSun(u_sun_texture, composite, getViewDir(), getSunVector());
     }
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);

@@ -1,8 +1,6 @@
 #include grass:shaders/lib/header.glsl
 #include grass:config/shadow
 
-//in vec4 shadowViewPos;
-
 vec3 shadowDist(int cascade, vec4 pos) {
     vec4 c = frx_shadowCenter(cascade);
     return abs((c.xyz - pos.xyz) / c.w);

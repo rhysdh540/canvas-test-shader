@@ -16,7 +16,9 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     );
 
     #ifndef SHADOWS_ENABLED
-    sunVector = vec3(sunVector.x, sunVector.y * cos(angle) + sunVector.z * sin(angle), -sunVector.y * sin(angle) + sunVector.z * cos(angle));
+    // if shadows are off, frx_sunVector isn't rotated
+    // so we need to rotate it here
+    sunVector = vec3(sunVector.x, sunVector.y * cosAngle + sunVector.z * sinAngle, -sunVector.y * sinAngle + sunVector.z * cosAngle);
     #endif
 
     vec3 right = normalize(vec3(sunVector.z, 0.0, -sunVector.x));
@@ -30,10 +32,9 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     vec2 uv = vec2(dot(diff, right), dot(diff, up));
     float distToCenter = max(abs(uv.x), abs(uv.y));
 
-    float sunSize = 6 * SUN_SIZE;
-    bool inSun = distToCenter < sunSize && t < 0;
+    float sunSize = 6 * SUN_SIZE; // 6 is roughly accurate to the size of the regular sun
 
-    if(!inSun) return;
+    if(!(distToCenter < sunSize && t < 0)) return;
     // Adjust the uv coordinates to map the texture properly
     vec2 sunTextcoord = uv / (sunSize * 2) + 0.5;
 
@@ -64,4 +65,8 @@ vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in 
         camInsideSphere ? 0.0 : (-b - sqrt(discriminant)) / 2.0,
         (-b + sqrt(discriminant)) / 2.0
     );
+}
+
+vec3 getSunVector() {
+    return frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
 }

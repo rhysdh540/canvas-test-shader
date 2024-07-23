@@ -61,8 +61,8 @@ vec3 viewSpaceToSceneSpace(in vec3 viewSpacePos) {
 
 float linearizeDepth(in float depth) {
     mat2 tempMatrix = mat2(
-    frx_inverseProjectionMatrix[2][2], frx_inverseProjectionMatrix[2][3],
-    frx_inverseProjectionMatrix[3][2], frx_inverseProjectionMatrix[3][3]
+        frx_inverseProjectionMatrix[2][2], frx_inverseProjectionMatrix[2][3],
+        frx_inverseProjectionMatrix[3][2], frx_inverseProjectionMatrix[3][3]
     );
     vec2 temp = tempMatrix * vec2(depth * 2.0 - 1.0, 1.0);
 
@@ -70,8 +70,8 @@ float linearizeDepth(in float depth) {
 }
 float delinearizeDepth(in float depth) {
     mat2 tempMatrix = mat2(
-    frx_projectionMatrix[2][2], frx_projectionMatrix[2][3],
-    frx_projectionMatrix[3][2], frx_projectionMatrix[3][3]
+        frx_projectionMatrix[2][2], frx_projectionMatrix[2][3],
+        frx_projectionMatrix[3][2], frx_projectionMatrix[3][3]
     );
     vec4 temp = frx_projectionMatrix * vec4(0.5, 0.5, depth, 1.0);
 
