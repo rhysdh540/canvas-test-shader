@@ -56,9 +56,5 @@
         samplerImages: ["fxaa_result"]
       }
     ]
-  },
-
-  includeOptional: [
-
-  ]
+  }
 }

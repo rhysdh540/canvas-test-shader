@@ -7,6 +7,7 @@
 #include grass:shaders/lib/shadows.frag
 #endif
 
+uniform sampler2D u_sky_color;
 uniform sampler2D u_glint;
 
 // In the case of multiple color attachments, you use different layout qualifiers.
@@ -64,7 +65,7 @@ void applySpecialEffects(inout vec4 color) {
 }
 
 void applyFog(inout vec4 color) {
-    vec3 fogColor = frx_fogColor.rgb * 0.5;
+    vec3 fogColor = texture(u_sky_color, frx_texcoord).rgb;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 

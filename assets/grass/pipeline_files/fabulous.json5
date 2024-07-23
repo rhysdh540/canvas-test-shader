@@ -21,6 +21,7 @@
           "weather_color", "weather_depth",
           "clouds_color", "clouds_depth",
           "particles_color", "particles_depth",
+          "sky_result",
 
           "minecraft:textures/environment/sun.png"
         ]

@@ -3,11 +3,9 @@
 #include grass:config/shadow
 #include grass:config/sky
 
-uniform sampler2D u_sun_texture;
-
 // originally from aerie shaders by ambrosia, licensed under MIT
 // i don't know if the license still applies but i'll keep this here just in case
-void applyCustomSun(inout vec3 color, const in vec3 viewDir, in vec3 sunVector) {
+void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in vec3 viewDir, in vec3 sunVector) {
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
     float angle = radians(SUNLIGHT_ANGLE);
@@ -40,7 +38,7 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir, in vec3 sunVector) 
     vec2 sunTextcoord = uv / (sunSize * 2) + 0.5;
 
     // Sample the texture
-    vec3 sunColor = texture(u_sun_texture, sunTextcoord).rgb;
+    vec3 sunColor = texture(sunTexture, sunTextcoord).rgb;
     float alpha = max(max(sunColor.r, sunColor.g), sunColor.b);
 
     // Lighten the sun color a bit, especially the transparent fake bloom
@@ -49,10 +47,6 @@ void applyCustomSun(inout vec3 color, const in vec3 viewDir, in vec3 sunVector) 
     // Finally apply the sun color to the sky
     color = mix(color, sunColor, alpha);
 }
-
-const float atmosphereRadius = 500; // in blocks
-
-const int steps = 16;
 
 vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in vec3 sphereCenter, const in float sphereRadius) {
     vec3 oc = rayOrigin - sphereCenter;
@@ -70,29 +64,4 @@ vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in 
         camInsideSphere ? 0.0 : (-b - sqrt(discriminant)) / 2.0,
         (-b + sqrt(discriminant)) / 2.0
     );
-}
-
-
-void customSky(inout vec3 color, in float depth, in float depthBlocks, const in vec3 viewDir) {
-    vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
-    bool isSky = depth == 1.0;
-
-    if(isSky) {
-        color = vec3(0); // remove the original sky
-    }
-
-    vec2 intersect = raySphereIntersect(vec3(0.0, frx_cameraPos.y, 0.0), viewDir, vec3(0.0), atmosphereRadius);
-    if(intersect.x >= 0.0) {
-        intersect.y = min(intersect.y, depthBlocks);
-
-        float rayLength = intersect.y - intersect.x;
-
-        float strength = isSky ? 1.2 : 1.3;
-
-        color += (pow(rayLength, strength) / atmosphereRadius) * ((frx_fogColor.rgb * 0.3) + vec3(0, 0, 0.2));
-    }
-
-    if(isSky) {
-        applyCustomSun(color, viewDir, sunVector);
-    }
 }

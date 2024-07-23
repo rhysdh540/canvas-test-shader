@@ -1,0 +1,41 @@
+{
+  images: [
+    {
+      name: "sky_result",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    }
+  ],
+  framebuffers: [
+    {
+      name: "sky",
+      colorAttachments: [{ image: "sky_result" }]
+    }
+  ],
+  programs: [
+    {
+      name: "sky",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/pre/sky.frag",
+    }
+  ],
+
+  beforeWorldRender: {
+    passes: [
+      {
+        name: "sky",
+        program: "sky",
+        framebuffer: "sky",
+      },
+    ]
+  }
+}

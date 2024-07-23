@@ -8,10 +8,12 @@
     vertexSource: "grass:shaders/gbuffer/main.vert",
     fragmentSource: "grass:shaders/gbuffer/main.frag",
     samplers: [
-      "u_glint"
+      "u_glint",
+      "u_sky_color"
     ],
     samplerImages: [
-      "minecraft:textures/misc/enchanted_item_glint.png"
+      "minecraft:textures/misc/enchanted_item_glint.png",
+      "sky_result"
     ]
   },
 
@@ -71,6 +73,7 @@
   },
 
   include: [
+    "grass:pipeline_files/customsky.json5",
     "grass:pipeline_files/config.json5",
     "grass:pipeline_files/main.json5",
     "grass:pipeline_files/fabulous.json5",

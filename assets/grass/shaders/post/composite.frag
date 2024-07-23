@@ -1,7 +1,7 @@
 #include grass:shaders/lib/header.glsl
 #include grass:config/shadow
 #include grass:config/sky
-#include grass:shaders/lib/sky.frag
+#include grass:shaders/lib/sky.glsl
 #include grass:shaders/lib/spaces.glsl
 
 uniform sampler2D u_main_color;
@@ -16,6 +16,9 @@ uniform sampler2D u_clouds_color;
 uniform sampler2D u_clouds_depth;
 uniform sampler2D u_particles_color;
 uniform sampler2D u_particles_depth; // 12 samplers (don't go above 16!)
+
+uniform sampler2D u_sky_color;
+uniform sampler2D u_sun_texture;
 
 in vec2 texcoord;
 
@@ -56,10 +59,11 @@ void main() {
     vec3 composite = mainColor.rgb;
     float compositeDepth = mainDepth;
 
-    #ifdef CUSTOM_SKY
-    float depthBlocks = length(setupSceneSpacePos(texcoord, mainDepth));
-    customSky(composite, compositeDepth, depthBlocks, getViewDir());
-    #endif
+    if(compositeDepth == 1.0) {
+        composite = texture(u_sky_color, texcoord).rgb;
+        vec3 sunVector = frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+        applyCustomSun(u_sun_texture, composite, getViewDir(), sunVector);
+    }
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);
