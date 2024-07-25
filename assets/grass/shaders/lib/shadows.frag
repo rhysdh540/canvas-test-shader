@@ -68,6 +68,14 @@ vec3 shadowLightmap() {
 
     vec3 blockLight = texture(frxs_lightmap, vec2(frx_fragLight.x, 1.0 / 16.0)).rgb;
 
-    vec3 totalSkyLight = skyLight + directLight;
+    float minBrightness = 1.0;
+
+    vec3 totalSkyLight = (skyLight + directLight);
+    if(frx_worldIsMoonlit == 1) {
+        totalSkyLight *= minBrightness;
+    } else {
+        totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - minBrightness) + minBrightness;
+    }
+
     return max(totalSkyLight, blockLight) * frx_fragLight.z;
 }

@@ -16,7 +16,7 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     );
 
     #ifndef SHADOWS_ENABLED
-    // if shadows are off, frx_sunVector isn't rotated
+    // if shadows are off, frx_skyLightVector isn't rotated
     // so we need to rotate it here
     sunVector = vec3(sunVector.x, sunVector.y * cosAngle + sunVector.z * sinAngle, -sunVector.y * sinAngle + sunVector.z * cosAngle);
     #endif
@@ -49,24 +49,27 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     color = mix(color, sunColor, alpha);
 }
 
-vec2 raySphereIntersect(const in vec3 rayOrigin, const in vec3 rayDir, const in vec3 sphereCenter, const in float sphereRadius) {
-    vec3 oc = rayOrigin - sphereCenter;
-    float b = 2.0 * dot(rayDir, oc);
-    float c = dot(oc, oc) - sphereRadius * sphereRadius;
-    float discriminant = b * b - 4.0 * c;
-
-    if (discriminant < 0.0) {
-        return vec2(-1.0);
-    }
-
-    bool camInsideSphere = dot(oc, oc) < sphereRadius * sphereRadius;
-
-    return vec2(
-        camInsideSphere ? 0.0 : (-b - sqrt(discriminant)) / 2.0,
-        (-b + sqrt(discriminant)) / 2.0
-    );
-}
-
 vec3 getSunVector() {
     return frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
+}
+
+// from net.minecraft.client.renderer.DimensionSpecialEffects
+// slightly modified for frex + removing decompiler nonsense
+// probably illegal
+vec4 getSunriseColor() {
+    float threshold = 0.4F;
+    float time = cos((frx_worldTime - 0.25) * TAU); // 0.25 to subtract a quarter of the day, moving 0 from noon to sunrise
+    if (abs(time) <= threshold) {
+        float i = (time / 0.4F) * 0.5F + 0.5F;
+        float j = 1.0F - (1.0F - sin(i * PI)) * 0.99F;
+        j *= j;
+        return vec4(
+            i * 0.3F + 0.7F,
+            i * i * 0.7F + 0.2F,
+            i * i * 0.0F + 0.2F,
+            j
+        );
+    } else {
+        return vec4(0.0);
+    }
 }

@@ -5,18 +5,25 @@
 
 layout(location = 0) out vec4 fragColor;
 
-const float atmosphereRadius = 500.0;
-
 void main() {
-    vec3 viewDir = getViewDir();
-    vec3 sunVector = getSunVector();
-    vec3 color = vec3(0);
+    #ifndef CUSTOM_SKY
+    return;
+    #endif
 
-    vec2 intersect = raySphereIntersect(vec3(0.0, frx_cameraPos.y, 0.0), viewDir, vec3(0.0), atmosphereRadius);
-    if(intersect.x >= 0.0) {
-        float rayLength = intersect.y - intersect.x;
-        color = (pow(rayLength, 1.2) / atmosphereRadius) * ((frx_fogColor.rgb * 0.3) + vec3(0, 0, 0.2));
+    vec3 color = frx_vanillaClearColor;
+    vec4 sunrise = getSunriseColor();
+
+    vec3 viewDir = getViewDir();
+    float sunAngle = (frx_worldTime) * TAU;
+
+    float f = sin(sunAngle) > 0.0F ? 1.0F : -1.0F;
+    float angle = dot(viewDir, vec3(f, 0.0F, 0.0F));
+
+    if (angle > 0.0F) {
+        if (sunrise != vec4(0.0F)) {
+            color = mix(color, sunrise.rgb, angle);
+        }
     }
 
-    fragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0F);
 }

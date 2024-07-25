@@ -65,7 +65,8 @@ void applySpecialEffects(inout vec4 color) {
 }
 
 void applyFog(inout vec4 color) {
-    vec3 fogColor = texture(u_sky_color, frx_texcoord).rgb;
+    vec2 texcoord = gl_FragCoord.xy / frxu_size;
+    vec3 fogColor = texture(u_sky_color, texcoord).rgb;
     float rainGradient = max(frx_rainGradient, frx_thunderGradient);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
