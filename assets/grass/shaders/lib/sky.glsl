@@ -54,22 +54,19 @@ vec3 getSunVector() {
 }
 
 // from net.minecraft.client.renderer.DimensionSpecialEffects
-// slightly modified for frex + removing decompiler nonsense
+// slightly modified for glsl/frex + removing decompiler nonsense
 // probably illegal
-vec4 getSunriseColor() {
+vec3 getSunriseColor() {
     float threshold = 0.4F;
-    float time = cos((frx_worldTime - 0.25) * TAU); // 0.25 to subtract a quarter of the day, moving 0 from noon to sunrise
+    float time = cos((frx_worldTime - 0.25) * TAU);
     if (abs(time) <= threshold) {
-        float i = (time / 0.4F) * 0.5F + 0.5F;
-        float j = 1.0F - (1.0F - sin(i * PI)) * 0.99F;
-        j *= j;
-        return vec4(
+        float i = (time + 0.5F) * 0.5F + 0.5F;
+        return vec3(
             i * 0.3F + 0.7F,
             i * i * 0.7F + 0.2F,
-            i * i * 0.0F + 0.2F,
-            j
+            0.2F
         );
     } else {
-        return vec4(0.0);
+        return vec3(-1.0);
     }
 }

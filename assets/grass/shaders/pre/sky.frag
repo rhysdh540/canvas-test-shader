@@ -5,9 +5,6 @@
 
 layout(location = 0) out vec4 fragColor;
 
-const float sunriseStart = 12.0 / 24.0;
-const float sunriseEnd = 14.0 / 24.0;
-
 void main() {
     #ifndef CUSTOM_SKY
     return;
@@ -16,29 +13,42 @@ void main() {
     vec3 color = frx_vanillaClearColor;
 
     vec3 viewDir = getViewDir();
-    float time = (frx_worldTime - 0.25);
+    float time = frx_worldTime;
 
-    vec4 sunriseColor = getSunriseColor();
-    // make the sunrise more intense at time = 13/24, and less intense at time = 12/24 and 14/24
-    if(sunriseColor != vec4(0.0)) {
-        float sunriseIntensity = smoothstep(sunriseStart, sunriseEnd, time);
+    vec3 sunriseColor = getSunriseColor();
+    if(sunriseColor != vec3(-1.0)) {
+        bool sunset = time >= 0.5 && time <= 0.75;
 
-        // make sunriseIntensity peak in the middle
-        sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5) * 10.0;
-
-        float sunAngle = time * TAU;
-        vec3 sunDirection = vec3(-cos(sunAngle), sin(sunAngle), 0.0);
+        float sunAngle = (time - 0.25) * TAU;
+        vec3 sunDirection = vec3(
+            cos(sunAngle),
+            -sin(sunAngle),
+            0.0
+        );
 
         // Calculate the intensity of the sunrise color based on the view direction and sun direction
-        float fadeFactor = dot(viewDir, sunDirection);
+        float fadeFactor = dot(viewDir, sunset ? -sunDirection : sunDirection);
 
         if(fadeFactor < 0.0) {
             // Adjust the fadeFactor to be stronger at the horizon and diminish upwards
             float horizonFactor = clamp((viewDir.y + 1.0) * 0.5, 0.0, 1.0);
 
-            float combinedFactor = sunriseIntensity * fadeFactor * horizonFactor;
+            float sunriseIntensity;
+            if(sunset) {
+                sunriseIntensity = smoothstep(12, 14, time * 24);
+            } else {
+                if(time > 0.75) {
+                    time = 1.0 - time;
+                }
+                sunriseIntensity = smoothstep(-2, 0, time * 24);
+            }
 
-            color = mix(color, sunriseColor.rgb, combinedFactor);
+            sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5);
+            sunriseIntensity = sunriseIntensity * 0.5 + 0.5;
+
+            float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 2;
+
+            color = mix(color, sunriseColor, combinedFactor);
         }
     }
 
