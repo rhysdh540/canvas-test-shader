@@ -7,7 +7,7 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
     #ifdef CUSTOM_SKY
-    vec3 color = frx_vanillaClearColor;
+    fragColor = vec4(frx_vanillaClearColor, 1.0);
 
     vec3 viewDir = getViewDir();
     float time = frx_worldTime;
@@ -45,10 +45,9 @@ void main() {
 
             float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 4 * SUNSET_INTENSITY;
 
-            color = mix(color, sunriseColor, combinedFactor);
+            fragColor.rgb = mix(fragColor.rgb, sunriseColor, combinedFactor);
         }
     }
 
-    fragColor = vec4(color, 1.0);
     #endif
 }

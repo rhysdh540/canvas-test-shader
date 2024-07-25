@@ -57,20 +57,26 @@ vec3 getMoonVector() {
     return frx_worldIsMoonlit == 0 ? -frx_skyLightVector : frx_skyLightVector;
 }
 
-// from net.minecraft.client.renderer.DimensionSpecialEffects
-// slightly modified for glsl/frex + removing decompiler nonsense
-// probably illegal
+// originally from net.minecraft.client.renderer.DimensionSpecialEffects
+// slightly cannibalized for glsl/frex + removing decompiler nonsense + whatever cursed stuff i did
+// may still be illegal
 vec3 getSunriseColor() {
-    float threshold = 0.4F;
-    float time = cos((frx_worldTime - 0.25) * TAU);
-    if (abs(time) <= threshold) {
-        float i = (time + 0.5F) * 0.5F + 0.5F;
+    float time = frx_worldTime;
+
+    if ((time >= (12.0 / 24.0) && time <= (14.0 / 24.0)) || (time >= (22.0 / 24.0) && time <= 1.0)) {
+        float i = (cos((time - 0.25) * TAU) + 0.5) * 0.5 + 0.5;
         return vec3(
-            i * 0.3F + 0.7F,
-            i * i * 0.7F + 0.2F,
-            0.2F
+            i * 0.3 + 0.7,
+            i * i * 0.7 + 0.2,
+            0.2
         );
     } else {
-        return vec3(-1.0);
+        return vec3(-1);
     }
 }
+
+#ifdef FRAGMENT_SHADER
+bool isStar() {
+    return true;
+}
+#endif
