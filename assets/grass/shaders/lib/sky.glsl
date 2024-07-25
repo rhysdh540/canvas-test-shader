@@ -53,6 +53,10 @@ vec3 getSunVector() {
     return frx_worldIsMoonlit == 0 ? frx_skyLightVector : -frx_skyLightVector;
 }
 
+vec3 getMoonVector() {
+    return frx_worldIsMoonlit == 0 ? -frx_skyLightVector : frx_skyLightVector;
+}
+
 // from net.minecraft.client.renderer.DimensionSpecialEffects
 // slightly modified for glsl/frex + removing decompiler nonsense
 // probably illegal

@@ -6,10 +6,7 @@
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    #ifndef CUSTOM_SKY
-    return;
-    #endif
-
+    #ifdef CUSTOM_SKY
     vec3 color = frx_vanillaClearColor;
 
     vec3 viewDir = getViewDir();
@@ -46,11 +43,12 @@ void main() {
             sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5);
             sunriseIntensity = sunriseIntensity * 0.5 + 0.5;
 
-            float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 2;
+            float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 4 * SUNSET_INTENSITY;
 
             color = mix(color, sunriseColor, combinedFactor);
         }
     }
 
     fragColor = vec4(color, 1.0);
+    #endif
 }

@@ -105,6 +105,13 @@
           nameKey: "config.grass.sun_size",
           descriptionKey: "config.grass.sun_size.desc"
         },
+        sunset_intensity: {
+          default: 1.0,
+          min: 0,
+          max: 10.0,
+          nameKey: "config.grass.sunset_intensity",
+          descriptionKey: "config.grass.sunset_intensity.desc"
+        },
       }
     },
 

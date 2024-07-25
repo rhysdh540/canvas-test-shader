@@ -45,6 +45,9 @@
   "config.grass.sun_size": "Sun Size",
   "config.grass.sun_size.desc": "The size of the sun",
 
+  "config.grass.sunset_intensity": "Sunset Intensity",
+  "config.grass.sunset_intensity.desc": "The intensity of the orange sunset fog",
+
   "config.grass.category.post": "Post Processing",
 
   "config.grass.sharpening": "Sharpening",
