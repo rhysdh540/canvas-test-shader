@@ -57,13 +57,13 @@ vec3 getMoonVector() {
     return frx_worldIsMoonlit == 0 ? -frx_skyLightVector : frx_skyLightVector;
 }
 
-// originally from net.minecraft.client.renderer.DimensionSpecialEffects
-// slightly cannibalized for glsl/frex + removing decompiler nonsense + whatever cursed stuff i did
-// may still be illegal
 vec3 getSunriseColor() {
     float time = frx_worldTime;
+    bool isSunset = (time >= (12.0 / 24.0) && time <= (14.0 / 24.0));
+    bool isSunrise = (time >= (22.0 / 24.0) && time <= 1.0);
 
-    if ((time >= (12.0 / 24.0) && time <= (14.0 / 24.0)) || (time >= (22.0 / 24.0) && time <= 1.0)) {
+    if (isSunset || isSunrise) {
+        // see net.minecraft.client.renderer.DimensionSpecialEffects
         float i = (cos((time - 0.25) * TAU) + 0.5) * 0.5 + 0.5;
         return vec3(
             i * 0.3 + 0.7,

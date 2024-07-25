@@ -34,10 +34,11 @@ void main() {
             if(sunset) {
                 sunriseIntensity = smoothstep(12, 14, time * 24);
             } else {
+                float fixedTime = time;
                 if(time > 0.75) {
-                    time = 1.0 - time;
+                    fixedTime = 1.0 - time;
                 }
-                sunriseIntensity = smoothstep(-2, 0, time * 24);
+                sunriseIntensity = smoothstep(-2, 0, fixedTime * 24);
             }
 
             sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5);
