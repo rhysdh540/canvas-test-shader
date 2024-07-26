@@ -59,10 +59,12 @@ void main() {
     vec3 composite = mainColor.rgb;
     float compositeDepth = mainDepth;
 
+    #ifdef CUSTOM_SKY
     if(compositeDepth == 1.0) {
         composite = texture(u_sky_color, texcoord).rgb;
         applyCustomSun(u_sun_texture, composite, getViewDir(), getSunVector());
     }
+    #endif
 
     addLayer(composite, translucentColor, compositeDepth, translucentDepth);
     addLayer(composite, weatherColor, compositeDepth, weatherDepth);

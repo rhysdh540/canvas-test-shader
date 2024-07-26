@@ -12,5 +12,5 @@ void main() {
     gl_Position = vec4(screen, 0.2, 1.0);
     texcoord = in_uv;
 
-    sunriseColor = getSunriseColor();
+    sunriseColor = getSunriseColor(); // calculate sunrise color per vertex instead of per fragment to save performance
 }
