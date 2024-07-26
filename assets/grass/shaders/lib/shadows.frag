@@ -42,6 +42,8 @@ vec2 diskSampling(float i, float n, float phi) {
     return vec2(sin(thing), cos(thing)) * theta;
 }
 
+const float maxBrightness = 0.8;
+
 // from aerie by ambrosia, licensed under MIT
 // slightly modified
 vec3 shadowLightmap() {
@@ -64,17 +66,21 @@ vec3 shadowLightmap() {
     float NdotL = mix(clamp(dot(frx_vertexNormal, frx_skyLightVector), 0, 1), 1.0, frx_matDisableDiffuse);
 
     vec3 skyLight = texture(frxs_lightmap, vec2(1.0 / 16.0, frx_fragLight.y)).rgb * 0.75;
-    vec3 directLight = frx_skyLightAtmosphericColor * shadow * sqrt(frx_skyLightTransitionFactor) * NdotL * 0.5;
+    vec3 directLight = frx_skyLightAtmosphericColor * shadow * sqrt(frx_skyLightTransitionFactor) * NdotL;
+
+    if(frx_worldIsMoonlit == 1) {
+        directLight *= (1.0 - maxBrightness);
+    } else {
+        directLight *= 0.75;
+    }
 
     vec3 blockLight = texture(frxs_lightmap, vec2(frx_fragLight.x, 1.0 / 16.0)).rgb;
 
-    float minBrightness = 1.0;
-
     vec3 totalSkyLight = (skyLight + directLight);
     if(frx_worldIsMoonlit == 1) {
-        totalSkyLight *= minBrightness;
+        totalSkyLight *= maxBrightness;
     } else {
-        totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - minBrightness) + minBrightness;
+        totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - maxBrightness) + maxBrightness;
     }
 
     return max(totalSkyLight, blockLight) * frx_fragLight.z;
