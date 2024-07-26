@@ -90,13 +90,8 @@ vec4 cas(const in sampler2D image, const in vec2 texcoord) {
   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-float GetLumaComponents(float r, float g, float b) {
-    // Y from JPEG spec
-    return 0.299 * r + 0.587 * g + 0.114 * b;
-}
-
 float GetLuma(vec4 p) {
-    return GetLumaComponents(p.x, p.y, p.z);
+    return frx_luminance(p.rgb);
 }
 
 float Square(float v) {

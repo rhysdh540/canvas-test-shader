@@ -7,6 +7,16 @@ layout(location = 0) out vec4 fragColor;
 
 in vec3 sunriseColor;
 
+#define MORNING 0
+#define NOON 0.25
+#define EVENING 0.5
+#define MIDNIGHT 0.75
+
+#define SUNSET_START 12.0 / 24.0
+#define SUNSET_END 14.0 / 24.0
+#define SUNRISE_START -2.0 / 24.0
+#define SUNRISE_END 0.0
+
 void main() {
     #ifdef CUSTOM_SKY
     fragColor = vec4(frx_vanillaClearColor, 1.0);
@@ -15,7 +25,7 @@ void main() {
     float time = frx_worldTime;
 
     if(sunriseColor != vec3(-1.0)) {
-        bool sunset = time >= 0.5 && time <= 0.75;
+        bool sunset = time >= EVENING && time <= MIDNIGHT;
 
         float sunAngle = (time - 0.25) * TAU;
         vec3 sunDirection = vec3(
@@ -33,13 +43,13 @@ void main() {
 
             float sunriseIntensity;
             if(sunset) {
-                sunriseIntensity = smoothstep(12, 14, time * 24);
+                sunriseIntensity = smoothstep(SUNSET_START, SUNSET_END, time);
             } else {
                 float fixedTime = time;
                 if(time > 0.75) {
                     fixedTime = 1.0 - time;
                 }
-                sunriseIntensity = smoothstep(-2, 0, fixedTime * 24);
+                sunriseIntensity = smoothstep(SUNRISE_START, SUNRISE_END, fixedTime);
             }
 
             sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5);
