@@ -5,6 +5,8 @@
 
 layout(location = 0) out vec4 fragColor;
 
+in vec3 sunriseColor;
+
 void main() {
     #ifdef CUSTOM_SKY
     fragColor = vec4(frx_vanillaClearColor, 1.0);
@@ -12,7 +14,6 @@ void main() {
     vec3 viewDir = getViewDir();
     float time = frx_worldTime;
 
-    vec3 sunriseColor = getSunriseColor();
     if(sunriseColor != vec3(-1.0)) {
         bool sunset = time >= 0.5 && time <= 0.75;
 

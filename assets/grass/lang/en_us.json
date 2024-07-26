@@ -20,8 +20,10 @@
   "config.grass.shadow.smooth.desc": "Smooth the edges of shadows, especially at low resolutions",
 
   "config.grass.category.toon": "Toon Shading",
+
   "config.grass.shading_type": "Shading Type",
   "config.grass.shading_type.desc": "The type of shading to use",
+
   "config.grass.posterization.levels": "Posterization Levels",
   "config.grass.posterization.levels.desc": "The number of levels to posterize to",
 

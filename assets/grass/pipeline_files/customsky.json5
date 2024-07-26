@@ -24,7 +24,7 @@
   programs: [
     {
       name: "sky",
-      vertexSource: "grass:shaders/post/basic_frame.vert",
+      vertexSource: "grass:shaders/pre/sky.vert",
       fragmentSource: "grass:shaders/pre/sky.frag",
     }
   ],
