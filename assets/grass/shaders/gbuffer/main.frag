@@ -17,38 +17,6 @@ layout(location = 0) out vec4 fragColor;
 const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
 const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
-vec4 calculateColor() {
-    #ifdef SHADOWS_ENABLED
-    vec3 lightmap = shadowLightmap();
-    #else
-    vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
-    #endif
-
-    if(frx_fragEnableAo) {
-        lightmap *= frx_fragLight.z;
-    }
-
-    // Apply diffuse lighting (again)
-    if(frx_fragEnableDiffuse) {
-        if(IS_GUI) {
-            float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
-            ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
-            lightmap *= ndotl;
-        } else {
-            lightmap *= p_diffuse(frx_vertexNormal);
-        }
-    }
-
-    // emmissive textures are always fully lit
-    lightmap = mix(lightmap, vec3(1.0), frx_fragEmissive);
-
-    // frx_fragColor refers to the Minecraft texture color,
-    // already multiplied with the vertex color so we can use it just like this.
-    vec4 color = frx_fragColor;
-    color.rgb *= lightmap;
-    return color;
-}
-
 void applySpecialEffects(inout vec4 color) {
     if(frx_matGlint == 1) {
         // Sample the glint texture and animate it
@@ -61,7 +29,7 @@ void applySpecialEffects(inout vec4 color) {
     // Apply hurt effect (decrease green and blue) if the material is specified to have hurt
     color.rgb = mix(color.rgb, hurtColor, frx_matHurt * 0.5);
     // Apply flash effect if the material is specified to be flashing
-    color.rgb = mix(color.rgb, vec3(1.0), frx_matFlash * 0.5);
+    color.rgb = mix(color.rgb, vec3(2.0), frx_matFlash * 0.5);
 }
 
 void applyFog(inout vec4 color) {
@@ -81,7 +49,47 @@ void applyFog(inout vec4 color) {
 }
 
 void frx_pipelineFragment() {
-    vec4 color = calculateColor();
+    mat3 tbn = mat3(
+        frx_vertexTangent.xyz,
+        cross(frx_vertexTangent.xyz, frx_vertexNormal.xyz) * frx_vertexTangent.w,
+        frx_vertexNormal.xyz
+    );
+    frx_fragNormal = tbn * frx_fragNormal;
+
+    if(frx_isHand) {
+        // Fix hand normals because they are in view space
+        frx_fragNormal = frx_fragNormal * frx_normalModelMatrix;
+    }
+
+    #ifdef SHADOWS_ENABLED
+    vec3 lightmap = shadowLightmap();
+    #else
+    vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
+    #endif
+
+    if(frx_fragEnableAo) {
+        lightmap *= frx_fragLight.z;
+    }
+
+    // Apply diffuse lighting (again)
+    if(frx_fragEnableDiffuse) {
+        if(IS_GUI) {
+            float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
+            ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
+            lightmap *= ndotl;
+        } else {
+            lightmap *= p_diffuse(frx_fragNormal);
+        }
+    }
+
+    // emmissive textures are always fully lit
+    lightmap = mix(lightmap, vec3(1.0), frx_fragEmissive);
+
+    // frx_fragColor refers to the Minecraft texture color,
+    // already multiplied with the vertex color so we can use it just like this.
+    vec4 color = frx_fragColor;
+    color.rgb *= lightmap;
+
     applySpecialEffects(color);
     if(!IS_GUI && frx_fogEnabled == 1) {
         applyFog(color);

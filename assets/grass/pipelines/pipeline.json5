@@ -2,6 +2,7 @@
   nameKey: "pipeline.grass.name",
   descriptionKey: "pipeline.grass.desc",
 
+  enablePBR: true,
   runVanillaClear: true,
 
   materialProgram: {

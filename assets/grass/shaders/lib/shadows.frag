@@ -63,7 +63,7 @@ vec3 shadowLightmap() {
     }
     shadow /= shadowSamples;
 
-    float NdotL = mix(clamp(dot(frx_vertexNormal, frx_skyLightVector), 0, 1), 1.0, frx_matDisableDiffuse);
+    float NdotL = mix(clamp(dot(frx_fragNormal, frx_skyLightVector), 0, 1), 1.0, frx_matDisableDiffuse);
 
     vec3 skyLight = texture(frxs_lightmap, vec2(1.0 / 16.0, frx_fragLight.y)).rgb * 0.75;
     vec3 directLight = frx_skyLightAtmosphericColor * shadow * sqrt(frx_skyLightTransitionFactor) * NdotL;
@@ -83,5 +83,5 @@ vec3 shadowLightmap() {
         totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - maxBrightness) + maxBrightness;
     }
 
-    return max(totalSkyLight, blockLight) * frx_fragLight.z;
+    return max(totalSkyLight, blockLight);
 }
