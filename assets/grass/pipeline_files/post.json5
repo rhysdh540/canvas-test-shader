@@ -78,7 +78,8 @@
       optionMap: {
         anti_aliasing: [
           { from: "off", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" },
-          { from: "fxaa", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" }
+          { from: "fxaa", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" },
+          { from: "taa", to: "grass:pipeline_files/aa/taa.json5" }
         ]
       }
     }

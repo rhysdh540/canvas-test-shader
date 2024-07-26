@@ -1,0 +1,112 @@
+{
+  images: [
+    {
+      name: "taa",
+      lod: 0,
+      internalFormat: "R11F_G11F_B10F",
+      pixelFormat: "RGB",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        // For some reason using nearest filtering breaks TAA
+        {
+          name: "TEXTURE_MIN_FILTER",
+          val: "NEAREST"
+        },
+        {
+          name: "TEXTURE_MAG_FILTER",
+          val: "NEAREST"
+        },
+        {
+          name: "TEXTURE_WRAP_S",
+          val: "CLAMP_TO_EDGE"
+        },
+        {
+          name: "TEXTURE_WRAP_T",
+          val: "CLAMP_TO_EDGE"
+        }
+      ]
+    },
+    {
+      name: "taa_copy",
+      lod: 0,
+      internalFormat: "R11F_G11F_B10F",
+      pixelFormat: "RGB",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        {
+          name: "TEXTURE_MIN_FILTER",
+          val: "LINEAR"
+        },
+        {
+          name: "TEXTURE_MAG_FILTER",
+          val: "LINEAR"
+        },
+        {
+          name: "TEXTURE_WRAP_S",
+          val: "CLAMP_TO_EDGE"
+        },
+        {
+          name: "TEXTURE_WRAP_T",
+          val: "CLAMP_TO_EDGE"
+        }
+      ]
+    }
+  ],
+
+  framebuffers: [
+    {
+      name: "taa",
+      colorAttachments: [
+        {
+          image: "taa"
+        }
+      ]
+    },
+    {
+      name: "taa_copy",
+      colorAttachments: [
+        {
+          image: "taa_copy"
+        }
+      ]
+    }
+  ],
+
+  programs: [
+    {
+      name: "taa",
+      vertexSource: "grass:shaders/post/basic_frame.vert",
+      fragmentSource: "grass:shaders/post/aa/taa.frag",
+      samplers: [
+        "u_color",
+        "u_previous_frame",
+        "u_depth",
+        "u_hand_depth"
+      ]
+    }
+  ],
+
+  afterRenderHand: {
+    passes: [
+      {
+        name: "taa",
+        program: "taa",
+        framebuffer: "taa",
+        samplerImages: [
+          "main_color",
+          "taa_copy",
+          "translucent_depth",
+          "main_depth"
+        ]
+      },
+      {
+        name: "taa_copy",
+        program: "copy",
+        framebuffer: "taa_copy",
+        samplerImages: ["taa"],
+      }
+    ]
+  }
+}

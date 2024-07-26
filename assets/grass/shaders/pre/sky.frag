@@ -12,11 +12,6 @@ in vec3 sunriseColor;
 #define EVENING 0.5
 #define MIDNIGHT 0.75
 
-#define SUNSET_START 12.0 / 24.0
-#define SUNSET_END 14.0 / 24.0
-#define SUNRISE_START -2.0 / 24.0
-#define SUNRISE_END 0.0
-
 void main() {
     #ifdef CUSTOM_SKY
     fragColor = vec4(frx_vanillaClearColor, 1.0);

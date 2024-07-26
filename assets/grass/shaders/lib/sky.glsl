@@ -43,7 +43,8 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     float alpha = max(max(sunColor.r, sunColor.g), sunColor.b);
 
     // Lighten the sun color a bit, especially the transparent fake bloom
-    sunColor = clamp(mix(sunColor * 2, sunColor * 10, 1.0 - alpha), 0.0, 1.0);
+    sunColor = exp((1.0 - alpha) + 1) * sunColor;
+    sunColor = clamp(mix(sunColor, sunColor * 10, 1.0 - alpha), 0.0, 1.2);
 
     // Finally apply the sun color to the sky
     color = mix(color, sunColor, alpha);
@@ -57,10 +58,15 @@ vec3 getMoonVector() {
     return frx_worldIsMoonlit == 0 ? -frx_skyLightVector : frx_skyLightVector;
 }
 
+#define SUNSET_START 12.0 / 24.0
+#define SUNSET_END 14.0 / 24.0
+#define SUNRISE_START -2.0 / 24.0
+#define SUNRISE_END 0.0
+
 vec3 getSunriseColor() {
     float time = frx_worldTime;
-    bool isSunset = (time >= (12.0 / 24.0) && time <= (14.0 / 24.0));
-    bool isSunrise = (time >= (22.0 / 24.0) && time <= 1.0);
+    #define isSunset (time >= SUNSET_START && time <= SUNSET_END)
+    #define isSunrise (time >= (SUNRISE_START + 1) && time <= SUNRISE_END + 1)
 
     if (isSunset || isSunrise) {
         // see net.minecraft.client.renderer.DimensionSpecialEffects
@@ -74,9 +80,3 @@ vec3 getSunriseColor() {
         return vec3(-1);
     }
 }
-
-#ifdef FRAGMENT_SHADER
-bool isStar() {
-    return true;
-}
-#endif
