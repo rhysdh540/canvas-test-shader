@@ -19,10 +19,6 @@
     {
       name: "fxaa",
       colorAttachments: [{ image: "fxaa_result" }]
-    },
-    {
-      name: "aa_copy",
-      colorAttachments: [{ image: "main_color", clearColor: 0x00000000 }]
     }
   ],
   programs: [
@@ -30,12 +26,6 @@
       name: "fxaa",
       vertexSource: "grass:shaders/post/basic_frame.vert",
       fragmentSource: "grass:shaders/post/aa/fxaa.frag",
-      samplers: ["u_source"]
-    },
-    {
-      name: "aa_copy",
-      vertexSource: "grass:shaders/post/basic_frame.vert",
-      fragmentSource: "grass:shaders/post/copy.frag",
       samplers: ["u_source"]
     }
   ],
@@ -50,9 +40,9 @@
       },
 
       {
-        name: "aa_copy",
-        program: "aa_copy",
-        framebuffer: "aa_copy",
+        name: "fxaa_copy",
+        program: "copy",
+        framebuffer: "copy",
         samplerImages: ["fxaa_result"]
       }
     ]

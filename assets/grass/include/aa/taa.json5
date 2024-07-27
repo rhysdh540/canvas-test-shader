@@ -8,23 +8,10 @@
       pixelDataType: "UNSIGNED_BYTE",
       target: "TEXTURE_2D",
       texParams: [
-        // For some reason using nearest filtering breaks TAA
-        {
-          name: "TEXTURE_MIN_FILTER",
-          val: "NEAREST"
-        },
-        {
-          name: "TEXTURE_MAG_FILTER",
-          val: "NEAREST"
-        },
-        {
-          name: "TEXTURE_WRAP_S",
-          val: "CLAMP_TO_EDGE"
-        },
-        {
-          name: "TEXTURE_WRAP_T",
-          val: "CLAMP_TO_EDGE"
-        }
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
       ]
     },
     {
@@ -35,22 +22,11 @@
       pixelDataType: "UNSIGNED_BYTE",
       target: "TEXTURE_2D",
       texParams: [
-        {
-          name: "TEXTURE_MIN_FILTER",
-          val: "LINEAR"
-        },
-        {
-          name: "TEXTURE_MAG_FILTER",
-          val: "LINEAR"
-        },
-        {
-          name: "TEXTURE_WRAP_S",
-          val: "CLAMP_TO_EDGE"
-        },
-        {
-          name: "TEXTURE_WRAP_T",
-          val: "CLAMP_TO_EDGE"
-        }
+        // For some reason using nearest filtering breaks TAA
+        { name: "TEXTURE_MIN_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_MAG_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
       ]
     }
   ],
@@ -58,19 +34,11 @@
   framebuffers: [
     {
       name: "taa",
-      colorAttachments: [
-        {
-          image: "taa"
-        }
-      ]
+      colorAttachments: [{ image: "taa" }]
     },
     {
       name: "taa_copy",
-      colorAttachments: [
-        {
-          image: "taa_copy"
-        }
-      ]
+      colorAttachments: [{ image: "taa_copy" }]
     }
   ],
 
