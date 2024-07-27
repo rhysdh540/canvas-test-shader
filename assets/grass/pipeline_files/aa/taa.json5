@@ -95,7 +95,7 @@
         program: "taa",
         framebuffer: "taa",
         samplerImages: [
-          "main_color",
+          "sharpen_result",
           "taa_copy",
           "translucent_depth",
           "main_depth"
