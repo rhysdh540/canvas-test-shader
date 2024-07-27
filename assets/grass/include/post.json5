@@ -74,12 +74,12 @@
 
   includeOptional: [
     {
-      default: "grass:pipeline_files/aa/fxaa_or_no_aa.json5",
+      default: "grass:include/aa/fxaa_or_no_aa.json5",
       optionMap: {
         anti_aliasing: [
-          { from: "off", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" },
-          { from: "fxaa", to: "grass:pipeline_files/aa/fxaa_or_no_aa.json5" },
-          { from: "taa", to: "grass:pipeline_files/aa/taa.json5" }
+          { from: "off", to: "grass:include/aa/fxaa_or_no_aa.json5" },
+          { from: "fxaa", to: "grass:include/aa/fxaa_or_no_aa.json5" },
+          { from: "taa", to: "grass:include/aa/taa.json5" }
         ]
       }
     }

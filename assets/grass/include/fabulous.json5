@@ -1,10 +1,10 @@
 {
   include: [
-    "grass:pipeline_files/fabulous/translucent.json",
-    "grass:pipeline_files/fabulous/entity.json",
-    "grass:pipeline_files/fabulous/weather.json",
-    "grass:pipeline_files/fabulous/clouds.json",
-    "grass:pipeline_files/fabulous/particles.json",
+    "grass:include/fabulous/translucent.json",
+    "grass:include/fabulous/entity.json",
+    "grass:include/fabulous/weather.json",
+    "grass:include/fabulous/clouds.json",
+    "grass:include/fabulous/particles.json",
   ],
 
   fabulous: {
