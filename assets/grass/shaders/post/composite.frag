@@ -18,7 +18,6 @@ uniform sampler2D u_particles_color;
 uniform sampler2D u_particles_depth; // 12 samplers (don't go above 16!)
 
 uniform sampler2D u_sky_color;
-uniform sampler2D u_sun_texture;
 
 in vec2 texcoord;
 
@@ -62,7 +61,6 @@ void main() {
     #ifdef CUSTOM_SKY
     if(compositeDepth == 1.0) {
         composite = texture(u_sky_color, texcoord).rgb;
-        applyCustomSun(u_sun_texture, composite, getViewDir(), getSunVector());
     }
     #endif
 

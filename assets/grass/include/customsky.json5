@@ -26,6 +26,9 @@
       name: "sky",
       vertexSource: "grass:shaders/pre/sky.vert",
       fragmentSource: "grass:shaders/pre/sky.frag",
+      samplers: [
+        "u_sun_texture"
+      ]
     }
   ],
 
@@ -35,6 +38,9 @@
         name: "sky",
         program: "sky",
         framebuffer: "sky",
+        samplerImages: [
+          "minecraft:textures/environment/sun.png"
+        ]
       },
     ]
   }

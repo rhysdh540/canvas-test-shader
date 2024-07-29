@@ -38,8 +38,8 @@ float shadowTexture(vec2 pos, float threshold, int cascade) {
 
 vec2 diskSampling(float i, float n, float phi) {
     float theta = (i + phi) / n;
-    float thing = theta * TAU * n * 1.618033988749894;
-    return vec2(sin(thing), cos(thing)) * theta;
+    float angle = theta * TAU * n * 1.618033988749894;
+    return vec2(sin(angle), cos(angle)) * theta;
 }
 
 const float maxBrightness = 0.8;

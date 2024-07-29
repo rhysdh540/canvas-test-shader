@@ -13,8 +13,6 @@ uniform sampler2D u_glint;
 // In the case of multiple color attachments, you use different layout qualifiers.
 layout(location = 0) out vec4 fragColor;
 
-// The shadow light vector - right and up
-const vec3 guiSkyLightVector = vec3(-0.2, 0.7, 1.0);
 const vec3 hurtColor = vec3(0.7, 0.1, 0.1);
 
 void applySpecialEffects(inout vec4 color) {
@@ -35,7 +33,7 @@ void applySpecialEffects(inout vec4 color) {
 void applyFog(inout vec4 color) {
     vec2 texcoord = gl_FragCoord.xy / vec2(frx_viewWidth, frx_viewHeight);
     vec3 fogColor = texture(u_sky_color, texcoord).rgb;
-    float rainGradient = max(frx_rainGradient, frx_thunderGradient);
+    float rainGradient = max(frx_smoothedRainGradient, frx_smoothedThunderGradient * 1.2);
     float fogStart = mix(frx_fogStart, frx_fogStart * 0.5, rainGradient);
 
     float blockDistance = length(frx_vertex.xyz) - 1;
