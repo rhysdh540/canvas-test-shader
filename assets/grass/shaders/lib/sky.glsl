@@ -1,11 +1,20 @@
 #include grass:shaders/lib/header.glsl
 #include grass:shaders/lib/spaces.glsl
+#include grass:shaders/lib/time.glsl
 #include grass:config/shadow
 #include grass:config/sky
 
+// highly dubious way of doing this but it seems to work
+mat2 moonUvModifier(const in int phase) {
+    return mat2(
+        0.25, 0.5,
+        phase * 0.25, step(4.0, float(phase)) * 0.5
+    );
+}
+
 // originally from aerie shaders by ambrosia, licensed under MIT
 // i don't know if the license still applies but i'll keep this here just in case
-void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in vec3 viewDir, in vec3 sunVector) {
+void drawSquare(const in sampler2D squareTexture, inout vec3 color, const in vec3 viewDir, in vec3 lightDir, const in bool isMoon) {
     // Rotate the square to make it more interesting
     // the higher the zenith angle, the more the sun will be rotated
     float angle = radians(SUNLIGHT_ANGLE);
@@ -18,36 +27,40 @@ void applyCustomSun(const in sampler2D sunTexture, inout vec3 color, const in ve
     #ifndef SHADOWS_ENABLED
     // if shadows are off, frx_skyLightVector isn't rotated
     // so we need to rotate it here
-    sunVector = vec3(sunVector.x, sunVector.y * cosAngle + sunVector.z * sinAngle, -sunVector.y * sinAngle + sunVector.z * cosAngle);
+    lightDir = vec3(lightDir.x, lightDir.y * cosAngle + lightDir.z * sinAngle, -lightDir.y * sinAngle + lightDir.z * cosAngle);
     #endif
 
-    vec3 right = normalize(vec3(sunVector.z, 0.0, -sunVector.x));
+    vec3 right = normalize(vec3(lightDir.z, 0.0, -lightDir.x));
     right.xy = rotationMatrix * right.xy;
-    vec3 up = normalize(cross(sunVector, right));
+    vec3 up = normalize(cross(lightDir, right));
 
     // Raytrace the sun in the sky
-    float t = -20.0 / dot(viewDir, sunVector);
+    float t = -20.0 / dot(viewDir, lightDir);
     vec3 hitPoint = viewDir * t;
-    vec3 diff = hitPoint - sunVector;
+    vec3 diff = hitPoint - lightDir;
     vec2 uv = vec2(dot(diff, right), dot(diff, up));
     float distToCenter = max(abs(uv.x), abs(uv.y));
 
-    float sunSize = 6 * SUN_SIZE; // 6 is roughly accurate to the size of the regular sun
+    float size = 6 * SUN_SIZE; // 6 is roughly accurate to the size of the regular sun
 
-    if(!(distToCenter < sunSize && t < 0)) return;
+    if(isMoon) {
+        // TODO: is this correct?
+        size *= 0.75;
+    }
+
+    if(distToCenter > size || t > 0) return;
+
     // Adjust the uv coordinates to map the texture properly
-    vec2 sunTextcoord = uv / (sunSize * 2) + 0.5;
+    vec2 texcoord = uv / (size * 2) + 0.5;
+
+    if(isMoon) {
+        mat2 uvModifier = moonUvModifier(moonPhase());
+        texcoord *= uvModifier[0];
+        texcoord += uvModifier[1];
+    }
 
     // Sample the texture
-    vec3 sunColor = texture(sunTexture, sunTextcoord).rgb;
-    float alpha = max(max(sunColor.r, sunColor.g), sunColor.b);
-
-    // Lighten the sun color a bit, especially the transparent fake bloom
-    sunColor = exp((1.0 - alpha) + 1) * sunColor;
-    sunColor = clamp(mix(sunColor, sunColor * 10, 1.0 - alpha), 0.0, 1.2);
-
-    // Finally apply the sun color to the sky
-    color = mix(color, sunColor, alpha);
+    color += texture(squareTexture, texcoord).rgb;
 }
 
 vec3 getSunVector() {
@@ -57,11 +70,6 @@ vec3 getSunVector() {
 vec3 getMoonVector() {
     return frx_worldIsMoonlit == 0 ? -frx_skyLightVector : frx_skyLightVector;
 }
-
-#define SUNSET_START 12.0 / 24.0
-#define SUNSET_END 14.0 / 24.0
-#define SUNRISE_START -2.0 / 24.0
-#define SUNRISE_END 0.0
 
 vec3 getSunriseColor() {
     float time = frx_worldTime;
@@ -79,4 +87,7 @@ vec3 getSunriseColor() {
     } else {
         return vec3(-1);
     }
+
+    #undef isSunset
+    #undef isSunrise
 }

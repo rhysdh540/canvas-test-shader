@@ -8,11 +8,7 @@ layout(location = 0) out vec4 fragColor;
 in vec3 sunriseColor;
 
 uniform sampler2D u_sun_texture;
-
-#define MORNING 0
-#define NOON 0.25
-#define EVENING 0.5
-#define MIDNIGHT 0.75
+uniform sampler2D u_moon_phases;
 
 void applySunset() {
     float time = frx_worldTime;
@@ -61,7 +57,13 @@ void main() {
         applySunset();
     }
 
-    applyCustomSun(u_sun_texture, fragColor.rgb, getViewDir(), getSunVector());
+    vec3 viewDir = getViewDir();
+    vec3 sunDirection = getSunVector();
+
+    // NOTE: this deviates from vanilla in that fog will blend with the sun/moon
+    // is this a good thing?
+    drawSquare(u_sun_texture, fragColor.rgb, viewDir, sunDirection, false);
+    drawSquare(u_moon_phases, fragColor.rgb, viewDir, -sunDirection, true);
 
     #endif
 }

@@ -27,7 +27,8 @@
       vertexSource: "grass:shaders/pre/sky.vert",
       fragmentSource: "grass:shaders/pre/sky.frag",
       samplers: [
-        "u_sun_texture"
+        "u_sun_texture",
+        "u_moon_phases"
       ]
     }
   ],
@@ -39,7 +40,8 @@
         program: "sky",
         framebuffer: "sky",
         samplerImages: [
-          "minecraft:textures/environment/sun.png"
+          "minecraft:textures/environment/sun.png",
+          "minecraft:textures/environment/moon_phases.png"
         ]
       },
     ]
