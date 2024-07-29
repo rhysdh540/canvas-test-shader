@@ -62,7 +62,12 @@ void frx_pipelineFragment() {
     }
 
     #ifdef SHADOWS_ENABLED
-    vec3 lightmap = shadowLightmap();
+    vec3 lightmap;
+    if(!(IS_GUI)) {
+        lightmap = shadowLightmap();
+    } else {
+        lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
+    }
     #else
     vec3 lightmap = texture(frxs_lightmap, frx_fragLight.xy).rgb;
     #endif
@@ -73,17 +78,11 @@ void frx_pipelineFragment() {
 
     // Apply diffuse lighting (again)
     if(frx_fragEnableDiffuse) {
-        if(IS_GUI) {
-            float ndotl = dot(frx_vertexNormal, guiSkyLightVector);
-            ndotl = ndotl * 0.5 + 0.5; // remap to 0-1 and lighten a bit
-            lightmap *= ndotl;
-        } else {
-            lightmap *= p_diffuse(frx_fragNormal);
-        }
+        lightmap *= p_diffuse(frx_fragNormal);
     }
 
     // emmissive textures are always fully lit
-    lightmap = mix(lightmap, vec3(1.0), frx_fragEmissive);
+    lightmap = mix(lightmap, frx_emissiveColor.rgb, frx_fragEmissive);
 
     // frx_fragColor refers to the Minecraft texture color,
     // already multiplied with the vertex color so we can use it just like this.
@@ -91,7 +90,7 @@ void frx_pipelineFragment() {
     color.rgb *= lightmap;
 
     applySpecialEffects(color);
-    if(!IS_GUI && frx_fogEnabled == 1) {
+    if(!(IS_GUI) && frx_fogEnabled == 1) {
         applyFog(color);
     }
 

@@ -18,9 +18,9 @@
           descriptionKey: "config.grass.shadow.resolution.desc"
         },
         shadow_samples: {
-          default: 16,
-          min: 1,
-          max: 64,
+          default: "16",
+          enum: true,
+          choices: ["1", "2", "4", "8", "16"],
           nameKey: "config.grass.shadow.samples",
           descriptionKey: "config.grass.shadow.samples.desc"
         },
