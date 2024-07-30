@@ -14,6 +14,8 @@ void main() {
     #ifdef CUSTOM_SKY
     fragColor = vec4(frx_vanillaClearColor, 1.0);
 
+    if(frx_worldHasSkylight != 1) return;
+
     if(sunriseColor != vec3(-1.0)) {
         applySunset(fragColor.rgb, sunriseColor);
     }

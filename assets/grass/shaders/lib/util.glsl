@@ -18,6 +18,18 @@ vec3 hsv2rgb(vec3 c) {
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-float luminance(vec3 color) {
-    return dot(color, vec3(0.2125f, 0.7153f, 0.0721f));
+#ifdef FRAGMENT_SHADER
+void fixFragNormal() {
+    mat3 tbn = mat3(
+        frx_vertexTangent.xyz,
+        cross(frx_vertexTangent.xyz, frx_vertexNormal.xyz) * frx_vertexTangent.w,
+        frx_vertexNormal.xyz
+    );
+    frx_fragNormal = tbn * frx_fragNormal;
+
+    if(frx_isHand) {
+        // Fix hand normals because they are in view space
+        frx_fragNormal = frx_fragNormal * frx_normalModelMatrix;
+    }
 }
+#endif

@@ -52,17 +52,7 @@ void applyFog(inout vec4 color) {
 }
 
 void frx_pipelineFragment() {
-    mat3 tbn = mat3(
-        frx_vertexTangent.xyz,
-        cross(frx_vertexTangent.xyz, frx_vertexNormal.xyz) * frx_vertexTangent.w,
-        frx_vertexNormal.xyz
-    );
-    frx_fragNormal = tbn * frx_fragNormal;
-
-    if(frx_isHand) {
-        // Fix hand normals because they are in view space
-        frx_fragNormal = frx_fragNormal * frx_normalModelMatrix;
-    }
+    fixFragNormal();
 
     #ifdef SHADOWS_ENABLED
     vec3 lightmap;
