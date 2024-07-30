@@ -138,7 +138,7 @@
         anti_aliasing: {
           default: "off",
           enum: true,
-          choices: ["off", "fxaa", "taa"],
+          choices: ["off", "fxaa", "taa", "smaa"],
           prefix: "aa_",
           nameKey: "config.grass.aa",
           descriptionKey: "config.grass.aa.desc"

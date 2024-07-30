@@ -79,7 +79,8 @@
         anti_aliasing: [
           { from: "off", to: "grass:include/aa/fxaa_or_no_aa.json5" },
           { from: "fxaa", to: "grass:include/aa/fxaa_or_no_aa.json5" },
-          { from: "taa", to: "grass:include/aa/taa.json5" }
+          { from: "taa", to: "grass:include/aa/taa.json5" },
+          { from: "smaa", to: "grass:include/aa/smaa.json5" }
         ]
       }
     }

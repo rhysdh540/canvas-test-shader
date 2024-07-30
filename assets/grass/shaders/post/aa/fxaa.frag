@@ -11,18 +11,11 @@ vec4 fxaa(sampler2D imag, vec2 texcoord) {
     vec2 inverseResolution = 1.0 / vec2(frxu_size);
     vec4 frag = texture(imag, texcoord);
 
-    vec3 rgbNW = texture(imag, texcoord + vec2(-1.0, -1.0) * inverseResolution).rgb;
-    vec3 rgbNE = texture(imag, texcoord + vec2(1.0, -1.0) * inverseResolution).rgb;
-    vec3 rgbSW = texture(imag, texcoord + vec2(-1.0, 1.0) * inverseResolution).rgb;
-    vec3 rgbSE = texture(imag, texcoord + vec2(1.0, 1.0) * inverseResolution).rgb;
-    vec3 rgbM  = frag.rgb;
-
-    vec3 luma = vec3(0.299, 0.587, 0.114);
-    float lumaNW = dot(rgbNW, luma);
-    float lumaNE = dot(rgbNE, luma);
-    float lumaSW = dot(rgbSW, luma);
-    float lumaSE = dot(rgbSE, luma);
-    float lumaM  = dot(rgbM,  luma);
+    float lumaNW = frx_luminance(texture(imag, texcoord + vec2(-1.0, -1.0) * inverseResolution).rgb);
+    float lumaNE = frx_luminance(texture(imag, texcoord + vec2(1.0, -1.0) * inverseResolution).rgb);
+    float lumaSW = frx_luminance(texture(imag, texcoord + vec2(-1.0, 1.0) * inverseResolution).rgb);
+    float lumaSE = frx_luminance(texture(imag, texcoord + vec2(1.0, 1.0) * inverseResolution).rgb);
+    float lumaM  = frx_luminance(frag.rgb);
 
     float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
     float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
@@ -40,7 +33,7 @@ vec4 fxaa(sampler2D imag, vec2 texcoord) {
     vec3 rgbB = rgbA * 0.5 + 0.25 * (texture(imag, texcoord + dir * 0.5).rgb +
     texture(imag, texcoord - dir * 0.5).rgb);
 
-    float lumaB = dot(rgbB, luma);
+    float lumaB = frx_luminance(rgbB);
     if ((lumaB < lumaMin) || (lumaB > lumaMax)) {
         return vec4(rgbA, frag.a);
     }

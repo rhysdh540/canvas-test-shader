@@ -1,0 +1,140 @@
+{
+  images: [
+    {
+      name: "smaa_edge",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_MAG_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    },
+    {
+      name: "smaa_blend",
+      lod: 0,
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_MAG_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    },
+    {
+      name: "smaa_neighborhood",
+      internalFormat: "RGBA8",
+      pixelFormat: "RGBA",
+      pixelDataType: "UNSIGNED_BYTE",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_MAG_FILTER", val: "LINEAR" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
+      ]
+    }
+  ],
+
+  framebuffers: [
+    {
+      name: "smaa_edge",
+      colorAttachments: [{ image: "smaa_edge", clearColor: 0x00000000 }]
+    },
+    {
+      name: "smaa_blend",
+      colorAttachments: [{ image: "smaa_blend", clearColor: 0x00000000 }]
+    },
+    {
+      name: "smaa_neighborhood",
+      colorAttachments: [{ image: "smaa_neighborhood", clearColor: 0x00000000 }]
+    }
+  ],
+
+  programs: [
+    {
+      name: "smaa_edge",
+      vertexSource: "grass:shaders/post/aa/smaa/edge.vert",
+      fragmentSource: "grass:shaders/post/aa/smaa/edge.frag",
+      samplers: ["u_source"]
+    },
+    {
+      name: "smaa_blend",
+      vertexSource: "grass:shaders/post/aa/smaa/blend.vert",
+      fragmentSource: "grass:shaders/post/aa/smaa/blend.frag",
+      samplers: [
+        "u_edges",
+        "u_search",
+        "u_area"
+      ]
+    },
+    {
+      name: "smaa_neighborhood",
+      vertexSource: "grass:shaders/post/aa/smaa/neighborhood.vert",
+      fragmentSource: "grass:shaders/post/aa/smaa/neighborhood.frag",
+      samplers: [
+        "u_source",
+        "u_blend"
+      ]
+    }
+  ],
+
+  afterRenderHand: {
+    passes: [
+      {
+        name: "smaa_edge",
+        program: "smaa_edge",
+        framebuffer: "smaa_edge",
+        samplerImages: ["sharpen_result"]
+      },
+      {
+        name: "smaa_blend",
+        program: "smaa_blend",
+        framebuffer: "smaa_blend",
+        samplerImages: [
+          "smaa_edge",
+          "grass:textures/search.png",
+          "grass:textures/area.png"
+        ]
+      },
+      {
+        name: "smaa_neighborhood",
+        program: "smaa_neighborhood",
+        framebuffer: "smaa_neighborhood",
+        samplerImages: [
+          "sharpen_result",
+          "smaa_blend"
+        ]
+      },
+      {
+        name: "smaa_copy",
+        program: "copy",
+        framebuffer: "copy",
+        samplerImages: ["smaa_neighborhood"]
+      }
+    ]
+  },
+
+  // apparently i'm supposed to clear these
+  beforeWorldRender: {
+    passes: [
+      {
+        name: "clear_smaa_edge",
+        framebuffer: "smaa_edge",
+        program: "frex_clear"
+      },
+      {
+        name: "clear_smaa_blend",
+        framebuffer: "smaa_blend",
+        program: "frex_clear"
+      }
+    ]
+  }
+}
