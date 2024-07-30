@@ -91,3 +91,44 @@ vec3 getSunriseColor() {
     #undef isSunset
     #undef isSunrise
 }
+
+#ifdef FRAGMENT_SHADER
+void applySunset(inout vec3 color, const in vec3 sunriseColor) {
+    float time = frx_worldTime;
+    vec3 viewDir = getViewDir();
+    bool sunset = time >= EVENING && time <= MIDNIGHT;
+
+    float sunAngle = (time - 0.25) * TAU;
+    vec3 sunDirection = vec3(
+        cos(sunAngle),
+        -sin(sunAngle),
+        0.0
+    );
+
+    // Calculate the intensity of the sunrise color based on the view direction and sun direction
+    float fadeFactor = dot(viewDir, sunset ? -sunDirection : sunDirection);
+
+    if(fadeFactor < 0.0) {
+        // Adjust the fadeFactor to be stronger at the horizon and diminish upwards
+        float horizonFactor = clamp((viewDir.y + 1.0) * 0.5, 0.0, 1.0);
+
+        float sunriseIntensity;
+        if(sunset) {
+            sunriseIntensity = smoothstep(SUNSET_START, SUNSET_END, time);
+        } else {
+            float fixedTime = time;
+            if(time > 0.75) {
+                fixedTime = 1.0 - time;
+            }
+            sunriseIntensity = smoothstep(SUNRISE_START, SUNRISE_END, fixedTime);
+        }
+
+        sunriseIntensity = 1.0 - abs(sunriseIntensity - 0.5);
+        sunriseIntensity = sunriseIntensity * 0.5 + 0.5;
+
+        float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 4 * SUNSET_INTENSITY;
+
+        color = mix(color, sunriseColor, combinedFactor);
+    }
+}
+#endif
