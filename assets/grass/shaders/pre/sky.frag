@@ -10,7 +10,7 @@ in vec3 sunriseColor;
 uniform sampler2D u_sun_texture;
 uniform sampler2D u_moon_phases;
 
-void applySunset() {
+void applySunset(inout vec3 color) {
     float time = frx_worldTime;
     vec3 viewDir = getViewDir();
     bool sunset = time >= EVENING && time <= MIDNIGHT;
@@ -45,7 +45,7 @@ void applySunset() {
 
         float combinedFactor = -fadeFactor * horizonFactor * sunriseIntensity * 4 * SUNSET_INTENSITY;
 
-        fragColor.rgb = mix(fragColor.rgb, sunriseColor, combinedFactor);
+        color = mix(color, sunriseColor, combinedFactor);
     }
 }
 
@@ -54,7 +54,7 @@ void main() {
     fragColor = vec4(frx_vanillaClearColor, 1.0);
 
     if(sunriseColor != vec3(-1.0)) {
-        applySunset();
+        applySunset(fragColor.rgb);
     }
 
     vec3 viewDir = getViewDir();
@@ -62,6 +62,7 @@ void main() {
 
     // NOTE: this deviates from vanilla in that fog will blend with the sun/moon
     // is this a good thing?
+    // also seemingly draws through terrain while underwater...
     drawSquare(u_sun_texture, fragColor.rgb, viewDir, sunDirection, false);
     drawSquare(u_moon_phases, fragColor.rgb, viewDir, -sunDirection, true);
 

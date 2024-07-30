@@ -42,7 +42,7 @@ vec2 diskSampling(float i, float n, float phi) {
     return vec2(sin(angle), cos(angle)) * theta;
 }
 
-const float maxBrightness = 0.8;
+const float maxNightness = 0.6;
 
 // from aerie by ambrosia, licensed under MIT
 // slightly modified
@@ -69,7 +69,9 @@ vec3 shadowLightmap() {
     vec3 directLight = frx_skyLightAtmosphericColor * shadow * sqrt(frx_skyLightTransitionFactor) * NdotL;
 
     if(frx_worldIsMoonlit == 1) {
-        directLight *= (1.0 - maxBrightness);
+        float minMoonBrightness = 0.1;
+        float moonBrightness = frx_moonSize * (1.0 - minMoonBrightness) + minMoonBrightness;
+        directLight *= moonBrightness;
     } else {
         directLight *= 0.75;
     }
@@ -78,9 +80,9 @@ vec3 shadowLightmap() {
 
     vec3 totalSkyLight = (skyLight + directLight);
     if(frx_worldIsMoonlit == 1) {
-        totalSkyLight *= maxBrightness;
+        totalSkyLight *= maxNightness;
     } else {
-        totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - maxBrightness) + maxBrightness;
+        totalSkyLight *= frx_skyLightTransitionFactor * (1.0 - maxNightness) + maxNightness;
     }
 
     return max(totalSkyLight, blockLight);
