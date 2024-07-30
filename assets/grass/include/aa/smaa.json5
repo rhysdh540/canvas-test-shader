@@ -63,7 +63,10 @@
       name: "smaa_edge",
       vertexSource: "grass:shaders/post/aa/smaa/edge.vert",
       fragmentSource: "grass:shaders/post/aa/smaa/edge.frag",
-      samplers: ["u_source"]
+      samplers: [
+        "u_source",
+        "u_depth"
+      ]
     },
     {
       name: "smaa_blend",
@@ -92,7 +95,10 @@
         name: "smaa_edge",
         program: "smaa_edge",
         framebuffer: "smaa_edge",
-        samplerImages: ["sharpen_result"]
+        samplerImages: [
+          "sharpen_result",
+          "translucent_depth" // seems to work the best, since composite_depth is all 0 for some reason
+        ]
       },
       {
         name: "smaa_blend",

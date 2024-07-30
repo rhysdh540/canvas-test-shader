@@ -13,11 +13,27 @@
         { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
         { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" }
       ]
+    },
+    {
+      name: "composite_depth",
+      lod: 0,
+      internalFormat: "DEPTH_COMPONENT",
+      pixelFormat: "DEPTH_COMPONENT",
+      pixelDataType: "FLOAT",
+      target: "TEXTURE_2D",
+      texParams: [
+        { name: "TEXTURE_MIN_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_MAG_FILTER", val: "NEAREST" },
+        { name: "TEXTURE_WRAP_S", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_WRAP_T", val: "CLAMP_TO_EDGE" },
+        { name: "TEXTURE_COMPARE_MODE", val: "NONE" }
+      ]
     }
   ],
   framebuffers: [
     {
       name: "composite",
+      depthAttachment: { image: "composite_depth", clearDepth: 1.0 },
       colorAttachments: [{ image: "composite_result", clearColor: 0x00000000 }]
     },
     {

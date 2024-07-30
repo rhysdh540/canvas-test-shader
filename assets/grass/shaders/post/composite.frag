@@ -76,4 +76,5 @@ void main() {
     // Some post-effects may require the alpha to be set to other value
     // For instance, FXAA3 expects the alpha to contain the luminance of this color
     fragColor = vec4(composite, 1.0);
+    gl_FragDepth = compositeDepth;
 }
